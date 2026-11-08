@@ -950,7 +950,9 @@ function hydrateImages(){
     if(!src) return;
     var probe = new Image();
     probe.onload = function(){ el.src = src; };
-    probe.onerror = function(){};
+    probe.onerror = function(){
+      if(/\.webp$/i.test(src)){ el.src = src.replace(/\.webp$/i,'.jpg'); }
+    };
     probe.src = src;
   });
 }

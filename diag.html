@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>诊断 · 拍照姿势参考库</title>
+<style>
+:root{--bg:#100f0e;--ink:#ece7dd;--dim:#a29b8f;--ok:#5fbf7a;--bad:#e0553c;--line:rgba(236,231,221,.18)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;padding:20px 18px 60px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--dim);font-size:13px;margin-bottom:18px}
+.row{border-bottom:1px solid var(--line);padding:11px 0;display:flex;gap:12px;align-items:flex-start}
+.k{color:var(--dim);font-size:13px;flex:0 0 108px}
+.v{flex:1;font-size:14px;word-break:break-all;font-family:ui-monospace,Menlo,monospace}
+.ok{color:var(--ok);font-weight:600}
+.bad{color:var(--bad);font-weight:600}
+.big{margin-top:22px;padding:16px;border:1px solid var(--line);border-radius:10px}
+.big h2{margin:0 0 8px;font-size:16px}
+.big p{margin:0;font-size:15px;line-height:1.7}
+img.test{width:120px;height:90px;object-fit:cover;border:1px solid var(--line);border-radius:6px;background:#1c1a18}
+.imgs{display:flex;gap:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<h1>诊断页 v4</h1>
+<div class="sub">把这一页截图发给大肥鱼，就能定位问题</div>
+<div id="rows"></div>
+<div class="big">
+  <h2>图片实测</h2>
+  <p id="verdict">正在测试…</p>
+  <div class="imgs">
+    <img class="test" id="tWebp" alt="webp 测试">
+    <img class="test" id="tJpg" alt="jpg 测试">
+  </div>
+</div>
+<script>
+(function(){
+  var rows = document.getElementById('rows');
+  function add(k,v,cls){ var d=document.createElement('div'); d.className='row';
+    d.innerHTML = '<div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+'</div>';
+    rows.appendChild(d); }
+
+  add('页面版本', 'v4-diag-' + new Date().toISOString().slice(0,10));
+  add('访问地址', location.href);
+  add('UA', navigator.userAgent);
+  add('浏览器', (navigator.vendor||'') + ' / ' + (navigator.platform||''));
+  add('屏幕', screen.width + '×' + screen.height + ' dpr' + (window.devicePixelRatio||1));
+  add('画面', window.innerWidth + '×' + window.innerHeight);
+  add('在线', navigator.onLine ? '是' : '否 (离线)');
+
+  // WebP 编码能力
+  var webpCanvas = false;
+  try { webpCanvas = (document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') === 0); } catch(e){}
+  add('WebP(canvas)', webpCanvas ? '支持' : '不支持', webpCanvas ? 'ok' : 'bad');
+
+  // 真实图片加载测试
+  var webpUrl = 'photos/bride/chenpao/chenpao_xiaohongshu_850521075_fe7b4faf.webp';
+  var jpgUrl  = 'img/_cover/scene_hunligenpai.jpg';
+  var st = {webp:null, jpg:null};
+  function finish(){
+    if (st.webp === null || st.jpg === null) return;
+    var v = document.getElementById('verdict');
+    if (st.webp === 'ok' && st.jpg === 'ok') {
+      v.innerHTML = '<span class="ok">两张图都能加载</span> —— 图片没问题，那就是页面/Buff 缓存问题。';
+    } else if (st.webp !== 'ok' && st.jpg === 'ok') {
+      v.innerHTML = '<span class="bad">WebP 加载失败，JPEG 正常</span> —— 你的浏览器不支持 WebP，我把照片转成 JPEG 就能解决。';
+    } else if (st.jpg !== 'ok') {
+      v.innerHTML = '<span class="bad">连 JPEG 都加载失败</span> —— 是网络或缓存把图片请求挡住了（不是格式问题）。';
+    }
+    add('WebP 实测', st.webp === 'ok' ? '成功' : '失败', st.webp === 'ok' ? 'ok' : 'bad');
+    add('JPEG 实测', st.jpg === 'ok' ? '成功' : '失败', st.jpg === 'ok' ? 'ok' : 'bad');
+  }
+  var iw = document.getElementById('tWebp'), ij = document.getElementById('tJpg');
+  iw.onload = function(){ st.webp='ok'; finish(); };
+  iw.onerror = function(){ st.webp='fail'; finish(); };
+  ij.onload = function(){ st.jpg='ok'; finish(); };
+  ij.onerror = function(){ st.jpg='fail'; finish(); };
+  iw.src = webpUrl; ij.src = jpgUrl;
+
+  // 之前页面缓存痕迹
+  try {
+    var last = localStorage.getItem('diag-hit');
+    add('上次打开', last ? last : '第一次（无记录）');
+    localStorage.setItem('diag-hit', new Date().toLocaleString());
+  } catch(e){ add('localStorage', '不可用'); }
+})();
+</script>
+</body>
+</html>
