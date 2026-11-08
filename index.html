@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#100f0e">
+<title>拍照姿势参考库</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='4' fill='%23100f0e'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='%23d2593f' stroke-width='2.5'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23ece7dd'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<script>
+</script>
+<style>
+:root{
+  --bg:#100f0e; --surface:#171614; --surface-2:#201e1a; --surface-3:#292620;
+  --ink:#ece7dd; --soft:#c9c2b4; --muted:#a29b8f; --faint:#8a8378;
+  --line:rgba(236,231,221,.13); --line-strong:rgba(236,231,221,.26);
+  --accent:#d2593f; --accent-deep:#b8462f; --accent-ink:#170f0b; --accent-soft:rgba(210,89,63,.12);
+  --serif:"Source Han Serif SC","Noto Serif SC","Songti SC",STZhongsong,SimSun,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei UI","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --fs-body:15px; --fs-meta:12px; --fs-micro:10.5px;
+  --fs-h1:clamp(34px,9vw,48px); --fs-h2:clamp(27px,7vw,34px); --fs-h3:22px;
+  --r:2px; --r-sm:2px; --r-sheet:4px;
+  --t-fast:160ms; --t-base:240ms; --ease:cubic-bezier(.2,.7,.3,1);
+  --sa:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
+}
+html.light{
+  --bg:#f3f1ec; --surface:#eae6de; --surface-2:#e2ddd3; --surface-3:#d8d2c6;
+  --ink:#191612; --soft:#403a32; --muted:#5f584e; --faint:#71695f;
+  --line:rgba(25,22,18,.14); --line-strong:rgba(25,22,18,.28);
+  --accent:#a63a28; --accent-deep:#8b2f20; --accent-ink:#ffffff; --accent-soft:rgba(166,58,40,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg);touch-action:manipulation}
+body{
+  font-family:var(--sans);background:var(--bg);color:var(--ink);
+  font-size:var(--fs-body);line-height:1.65;letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  touch-action:manipulation;overscroll-behavior-y:none;
+}
+h1,h2,h3{line-height:1.24;font-weight:700;letter-spacing:.01em;text-wrap:balance}
+p,li{text-wrap:pretty}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;font-size:inherit;line-height:1.2;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+img{display:block;-webkit-user-drag:none}
+::selection{background:var(--accent);color:var(--accent-ink)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+#app{max-width:640px;margin:0 auto;height:100%;height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg)}
+@media (min-width:680px){
+  body{background:#0a0908}
+  html.light body{background:#e7e3da}
+  #app{border-left:1px solid var(--line);border-right:1px solid var(--line)}
+}
+
+/* ---------- 顶栏 ---------- */
+header#topbar{
+  position:sticky;top:0;z-index:30;background:var(--bg);
+  border-bottom:1px solid var(--line);
+  padding:calc(6px + var(--sa)) 14px 6px;
+  display:flex;align-items:center;gap:8px;min-height:calc(56px + var(--sa));
+}
+.tb-title{font-family:var(--serif);font-size:16px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.tb-brand b{font-family:var(--serif);font-size:16.5px;font-weight:700;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{flex:0 0 auto;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.16em;color:var(--muted);
+  border:1px solid var(--line-strong);padding:2px 6px;border-radius:var(--r)}
+.tb-actions{display:flex;align-items:center;gap:2px;flex:none;margin-right:-10px}
+.tb-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--muted);border-radius:var(--r);transition:color var(--t-fast) var(--ease),background var(--t-fast) var(--ease)}
+.tb-icon svg{width:19px;height:19px}
+.tb-icon.sun{color:var(--accent)}
+.tb-icon:active{background:var(--surface)}
+.tb-back{width:44px;height:44px;display:flex;align-items:center;justify-content:center;margin-left:-10px;color:var(--ink);border-radius:var(--r)}
+.tb-back svg{width:21px;height:21px}
+main#view{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+/* ---------- 底部导航 ---------- */
+nav#tabbar{
+  position:sticky;bottom:0;z-index:30;background:var(--bg);
+  border-top:1px solid var(--line);display:flex;padding-bottom:var(--sb);
+}
+.tab{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;color:var(--faint);transition:color var(--t-fast) var(--ease)}
+.tab svg{width:21px;height:21px;transition:color var(--t-fast) var(--ease)}
+.tab span{font-size:10px;font-weight:500;letter-spacing:.09em}
+.tab.on{color:var(--ink)}
+.tab.on svg{color:var(--accent)}
+.tab.on::before{content:"";position:absolute;top:-1px;left:50%;width:18px;height:1.5px;margin-left:-9px;background:var(--accent)}
+.page{padding:26px 20px calc(44px + var(--sb))}
+.page-head{margin:4px 0 26px}
+.kicker{font-family:var(--mono);font-size:var(--fs-micro);letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.page-head h1,.page-head h2{font-family:var(--serif);font-size:var(--fs-h2);font-weight:700;margin-top:10px;line-height:1.26}
+.lede{color:var(--muted);font-size:13px;line-height:1.75;margin-top:10px;max-width:46ch}
+.lede .tip-ic{margin-left:2px}
+
+/* ---------- 首页 ---------- */
+.hero{padding:10px 0 34px;border-bottom:1px solid var(--line);margin-bottom:34px}
+.hero h1{font-family:var(--serif);font-size:var(--fs-h1);font-weight:700;margin-top:16px;letter-spacing:.01em;line-height:1.3}
+.hero-sub{color:var(--muted);font-size:13.5px;line-height:1.8;margin-top:16px;max-width:40ch}
+.scene-list{display:flex;flex-direction:column}
+.scene{padding:0 0 34px;margin:0 0 34px;border-bottom:1px solid var(--line)}
+.scene:last-child{padding-bottom:0;margin-bottom:0;border-bottom:0}
+.scene-media{display:block;line-height:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface);transition:border-color var(--t-fast) var(--ease)}
+.scene-media img{width:100%;height:auto}
+.scene-cap{margin-top:14px}
+.scene-line{display:flex;align-items:baseline;gap:12px}
+.scene-no{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--accent);flex:none}
+.scene-line h2{font-family:var(--serif);font-size:clamp(23px,6vw,28px);font-weight:700;flex:1;min-width:0;line-height:1.3}
+.scene-count{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);white-space:nowrap;flex:none}
+.scene-tag{font-size:12px;letter-spacing:.04em;color:var(--muted);margin-top:7px}
+.scene-desc{font-size:13px;line-height:1.75;color:var(--soft);margin-top:5px;max-width:48ch;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (hover:hover){
+  .scene-media:hover{border-color:var(--line-strong)}
+  .scene:hover .scene-line h2{color:var(--accent)}
+}
+
+/* ---------- 场景页 ---------- */
+.segmented{display:flex;gap:26px;border-bottom:1px solid var(--line);margin:0 0 26px}
+.segmented button{position:relative;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 0 12px;
+  color:var(--muted);font-size:13.5px;font-weight:500;letter-spacing:.04em;transition:color var(--t-fast) var(--ease)}
+.segmented button small{font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:400}
+.segmented button.on{color:var(--ink)}
+.segmented button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--accent)}
+.segmented button.on small{color:var(--accent)}
+
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 14px}
+.cat-item{display:block;min-width:0}
+.cat-media{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface);line-height:0;transition:border-color var(--t-fast) var(--ease)}
+.cat-media img{width:100%;height:auto}
+.cat-cap{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:9px}
+.cat-cap h3{font-size:14px;font-weight:600;letter-spacing:.02em;line-height:1.45;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cat-cap span{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--muted);white-space:nowrap;flex:none}
+@media (hover:hover){
+  .cat-item:hover .cat-media{border-color:var(--line-strong)}
+  .cat-item:hover .cat-cap h3{color:var(--accent)}
+}
+
+/* ---------- 按钮 / 工具条 ---------- */
+.tools{display:flex;gap:10px;margin:0 0 22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:0 16px;
+  border:1px solid var(--line-strong);border-radius:var(--r);background:transparent;color:var(--ink);
+  font-size:13px;font-weight:600;letter-spacing:.03em;
+  transition:background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+.btn svg{width:16px;height:16px;flex:none}
+.btn:active{background:var(--surface)}
+.btn-accent{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn-accent:active{background:var(--accent-deep)}
+.btn-line{background:transparent}
+.btn.on{border-color:var(--accent);color:var(--accent)}
+.tools .btn{flex:1;min-width:0}
+.btn-sm{min-height:44px;padding:0 12px;font-size:12px}
+.add-ph{margin:0 0 22px}
+.add-ph .btn{width:100%;border-style:dashed;color:var(--muted)}
+.tip-ic{position:relative;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;vertical-align:-7px;
+  color:var(--accent);border-radius:50%;flex:none}
+.tip-ic::after{content:"";position:absolute;inset:-9px}
+.tip-ic svg{width:15px;height:15px}
+.tip-ic:active{background:var(--accent-soft)}
+
+/* ---------- 照片网格 ---------- */
+.ph-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 12px;align-items:start}
+.ph{position:relative;min-width:0}
+.ph-open{position:relative;display:block;width:100%;padding:0;line-height:0;aspect-ratio:3/4;
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface);
+  transition:border-color var(--t-fast) var(--ease)}
+.ph-open img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.ph-open:active img{opacity:.88}
+.ph-cap{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:2px;min-height:44px}
+.ph-no{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted)}
+.favbtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;margin-right:-10px;
+  color:var(--faint);border-radius:var(--r);transition:color var(--t-fast) var(--ease)}
+.favbtn svg{width:17px;height:17px}
+.favbtn.on{color:var(--accent)}
+.favbtn.on svg{fill:currentColor}
+.mbar{display:flex;gap:6px;margin:0 0 2px}
+.mbar .mini{flex:1;min-height:44px;display:flex;align-items:center;justify-content:center;gap:5px;
+  border:1px solid var(--line);border-radius:var(--r);font-size:11.5px;color:var(--muted);background:transparent}
+.mbar .mini:active{background:var(--surface)}
+.mbar .mini svg{width:13px;height:13px;flex:none}
+@media (hover:hover){
+  .ph-open:hover{border-color:var(--line-strong)}
+}
+
+/* ---------- 管理：拖拽排序 / 批量删除 ---------- */
+.mg-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px}
+.mg-hint{font-size:12px;color:var(--muted);letter-spacing:.02em;line-height:1.6;text-wrap:pretty}
+.mg-bar .btn{flex:none}
+.drag{position:absolute;top:6px;right:6px;z-index:3;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  color:#f1ece2;background:rgba(10,9,8,.58);border:1px solid rgba(241,236,226,.3);border-radius:var(--r);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);touch-action:none;cursor:grab;
+  transition:background var(--t-fast) var(--ease)}
+.drag svg{width:18px;height:18px}
+.drag:active{cursor:grabbing;background:rgba(10,9,8,.84)}
+.ph.dragging{opacity:.58}
+.ph.dragging .ph-open{border-color:var(--accent)}
+.pick{position:absolute;top:8px;left:8px;z-index:3;width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  color:transparent;background:rgba(10,9,8,.5);border:1.5px solid rgba(241,236,226,.85);border-radius:var(--r);
+  transition:background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+.pick svg{width:14px;height:14px}
+.ph.sel .pick{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ph.sel .ph-open{border-color:var(--accent)}
+.page.has-batch{padding-bottom:calc(158px + var(--sb))}
+.batchbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(56px + var(--sb));width:100%;max-width:640px;z-index:45;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 14px;background:var(--surface-2);border-top:1px solid var(--line-strong)}
+.batch-count{font-size:12.5px;color:var(--soft);white-space:nowrap}
+.batch-count b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.batch-acts{display:flex;gap:8px;flex:none}
+.batch-acts .btn{min-width:58px}
+.btn:disabled{opacity:.42;cursor:default}
+@media (max-width:420px){
+  .batchbar{flex-wrap:wrap;justify-content:center;width:calc(100% - 24px);border:1px solid var(--line-strong);border-radius:var(--r)}
+  .batch-count{width:100%;text-align:center}
+  .batch-acts{width:100%;justify-content:center}
+  .batch-acts .btn{flex:1}
+}
+
+/* ---------- 收藏 / 空状态 ---------- */
+.empty{padding:72px 16px;text-align:center;color:var(--muted);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.empty svg{width:34px;height:34px;margin:0 auto 20px;color:var(--faint)}
+.empty p{font-size:13.5px;line-height:1.9}
+.empty .btn{margin-top:22px}
+.fchips{display:flex;gap:8px;overflow-x:auto;margin:0 0 22px;padding-bottom:3px;scrollbar-width:none}
+.fchips::-webkit-scrollbar{display:none}
+.fchip{flex:none;display:inline-flex;align-items:center;min-height:40px;padding:0 14px;
+  border:1px solid var(--line-strong);border-radius:var(--r);background:transparent;color:var(--muted);
+  font-size:12.5px;letter-spacing:.03em;white-space:nowrap;
+  transition:color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)}
+.fchip b{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--faint);margin-left:6px}
+.fchip.on{color:var(--accent);border-color:var(--accent)}
+.fchip.on b{color:var(--accent)}
+
+/* ---------- 设备清单 ---------- */
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+  margin:34px 0 4px;padding-top:24px;border-top:1px solid var(--line)}
+.sec-head .sh-l{min-width:0}
+.sec-head h3{font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.4;margin-top:7px}
+.sec-head .gc{padding-bottom:3px}
+.sec-head + .gear-group{border-top:0}
+.gear-group{border-top:1px solid var(--line);padding:22px 0 6px}
+.gear-group:last-of-type{border-bottom:1px solid var(--line)}
+.gear-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.gear-head h3{font-family:var(--serif);font-size:18px;font-weight:700;line-height:1.4}
+.gc{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.gc .sep{color:var(--faint);margin:0 5px}
+.gc b{color:var(--accent);font-weight:500}
+.gear-bar{height:2px;background:var(--line);margin-bottom:6px;overflow:hidden}
+.gear-bar i{display:block;height:100%;background:var(--accent);transition:width var(--t-base) var(--ease)}
+.gear-item{display:flex;align-items:center;gap:12px;min-height:52px;border-bottom:1px solid var(--line);cursor:pointer}
+.gear-item:last-child{border-bottom:0}
+.chk{width:20px;height:20px;border:1.5px solid var(--faint);border-radius:var(--r);flex:none;
+  display:flex;align-items:center;justify-content:center;color:transparent;
+  transition:background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+.chk svg{width:12px;height:12px}
+.gear-item.on .chk{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.gear-item .tx{flex:1;font-size:14px;line-height:1.5;min-width:0;transition:color var(--t-fast) var(--ease)}
+.gear-item.on .tx{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line-strong)}
+.gear-item .del{width:44px;height:44px;flex:none;margin-right:-10px;color:var(--faint);display:flex;align-items:center;justify-content:center}
+.gear-item .del svg{width:15px;height:15px}
+.gear-add-row{display:flex;gap:8px;padding:12px 0 20px}
+.gear-add-row input{flex:1;min-width:0;min-height:44px;border:1px solid var(--line);border-radius:var(--r);
+  padding:0 12px;font:inherit;font-size:13.5px;background:transparent;color:var(--ink)}
+.gear-add-row input::placeholder{color:var(--faint)}
+.gear-add-row input:focus{outline:none;border-color:var(--accent)}
+.gear-add-row .btn{flex:none;min-height:44px}
+
+/* ---------- 我的 ---------- */
+.panel{border-top:1px solid var(--line);padding:22px 0}
+.panel:last-of-type{border-bottom:1px solid var(--line)}
+.panel h3{font-family:var(--serif);font-size:18px;font-weight:700;line-height:1.4;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.panel h3 svg{width:17px;height:17px;color:var(--accent);flex:none}
+.panel p,.panel li{font-size:13.5px;color:var(--soft);line-height:1.85}
+.panel ul{list-style:none;padding:0}
+.panel li{position:relative;padding-left:17px}
+.panel li+li{margin-top:5px}
+.panel li::before{content:"";position:absolute;left:0;top:.85em;width:6px;height:1px;background:var(--accent)}
+.panel .step{margin:8px 0;padding:11px 0;border-top:1px dashed var(--line);font-size:13px;line-height:1.8}
+.panel .step b{color:var(--ink);font-weight:600}
+.rowbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.rowbtns .btn{flex:1;min-width:130px}
+
+/* ---------- 版权与免责声明 ---------- */
+.legal-foot{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);text-align:center}
+.legal-foot button{min-height:44px;padding:0 10px;color:var(--muted);font-size:12px;line-height:1.8;letter-spacing:.02em;
+  text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px;
+  transition:color var(--t-fast) var(--ease)}
+.legal-copy p{font-size:13.5px;line-height:1.9;color:var(--soft)}
+.legal-copy p+p{margin-top:10px}
+.legal-mail{color:var(--accent);text-decoration:underline;text-underline-offset:2px;word-break:break-all}
+.legal-actions{display:flex;justify-content:flex-end;margin-top:18px}
+.legal-modal{position:relative}
+.legal-modal h3{padding-right:44px}
+.legal-x{position:absolute;top:12px;right:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  color:var(--muted);border-radius:var(--r);transition:color var(--t-fast) var(--ease),background var(--t-fast) var(--ease)}
+.legal-x svg{width:18px;height:18px}
+@media (hover:hover){
+  .legal-foot button:hover{color:var(--ink)}
+  .legal-x:hover{color:var(--ink)}
+}
+
+/* ---------- 搜索 ---------- */
+.searchbar{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line-strong);padding:2px 0 8px;margin:0 0 6px}
+.searchbar svg{width:18px;height:18px;color:var(--muted);flex:none}
+.searchbar input{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:inherit;font-size:16px;min-height:44px;outline:none}
+.searchbar input::placeholder{color:var(--faint)}
+.sres{display:flex;flex-direction:column}
+.srow{display:flex;align-items:center;gap:12px;width:100%;min-height:66px;padding:13px 0;border-bottom:1px solid var(--line);text-align:left}
+.srow-main{flex:1;min-width:0}
+.smeta{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.srow b{font-size:15px;font-weight:600;letter-spacing:.01em}
+.scnt{font-family:var(--mono);font-size:11px;color:var(--accent);white-space:nowrap;flex:none}
+.sempty{padding:52px 0;text-align:center;color:var(--muted);font-size:13.5px;border-bottom:1px solid var(--line)}
+
+/* ---------- 全屏查看 ---------- */
+#ov{position:fixed;inset:0;z-index:60;background:#0a0908;color:#f1ece2;display:none;flex-direction:column}
+#ov.show{display:flex}
+.ov-top{display:flex;align-items:center;gap:8px;padding:calc(6px + var(--sa)) 8px 6px;min-height:52px;
+  border-bottom:1px solid rgba(241,236,226,.16);background:#0a0908}
+.ov-top .t{font-family:var(--serif);font-size:14.5px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ov-top .n{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:#a29b8f;margin-right:6px;white-space:nowrap}
+.ov-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#f1ece2;border-radius:2px}
+.ov-btn svg{width:21px;height:21px}
+.ov-stage{flex:1;position:relative;overflow:hidden}
+.ov-stage img{position:absolute;inset:0;margin:auto;max-width:100%;max-height:100%;object-fit:contain}
+.ov-zone{position:absolute;top:0;bottom:0;width:35%;z-index:5;display:flex;align-items:center;padding:0 14px}
+.ov-zone.prev{left:0;justify-content:flex-start}
+.ov-zone.next{right:0;justify-content:flex-end}
+.ov-arrow{width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:#f1ece2;
+  background:rgba(10,9,8,.46);border:1px solid rgba(241,236,226,.3);border-radius:50%;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);pointer-events:none;
+  transition:background var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)}
+.ov-arrow svg{width:20px;height:20px}
+.ov-zone:active .ov-arrow{background:rgba(10,9,8,.8);transform:scale(.94)}
+@media (hover:hover){
+  .ov-zone:hover .ov-arrow{background:rgba(10,9,8,.72)}
+}
+.ov-bottom{display:flex;align-items:center;justify-content:center;gap:36px;padding:10px 0 calc(12px + var(--sb));
+  border-top:1px solid rgba(241,236,226,.16);background:#0a0908}
+.ov-fav{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;letter-spacing:.08em;
+  min-height:48px;min-width:58px;padding:4px 10px;color:#a29b8f;border-radius:2px}
+.ov-fav svg{width:22px;height:22px}
+.ov-fav.on{color:#d2593f}
+.ov-fav.on svg{fill:currentColor}
+
+/* ---------- 弹层 ---------- */
+.modal-mask{position:fixed;inset:0;background:rgba(8,7,6,.72);z-index:70;display:none;align-items:flex-end;justify-content:center}
+.modal-mask.show{display:flex}
+.modal{background:var(--surface);border-top:1px solid var(--line-strong);width:100%;max-width:560px;
+  border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:24px 20px calc(24px + var(--sb));max-height:88vh;overflow-y:auto}
+.modal h3{font-family:var(--serif);font-size:20px;font-weight:700;margin-bottom:12px}
+.modal p{font-size:13.5px;color:var(--soft);line-height:1.8}
+.modal .step{margin:10px 0;padding:11px 12px;background:var(--surface-2);border-radius:var(--r);font-size:13px;line-height:1.8}
+.modal .step b{color:var(--ink);font-weight:600}
+.modal-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.field-label{display:block;font-size:12px;letter-spacing:.06em;color:var(--muted);margin:14px 0 6px}
+.field-input{width:100%;min-height:44px;border:1px solid var(--line);border-radius:var(--r);
+  background:transparent;color:var(--ink);padding:0 12px;font:inherit;font-size:15px}
+.field-input:focus{outline:none;border-color:var(--accent)}
+.field-hint{font-size:11.5px;color:var(--faint);margin-top:7px}
+.field-err{display:none;font-size:11.5px;color:var(--accent);margin-top:7px}
+.field-err.show{display:block}
+
+/* ---------- toast ---------- */
+#toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(8px);background:var(--surface-2);
+  border:1px solid var(--line-strong);color:var(--ink);font-size:12.5px;letter-spacing:.02em;padding:10px 16px;
+  border-radius:var(--r);z-index:90;box-shadow:0 10px 30px rgba(0,0,0,.28);opacity:0;
+  transition:opacity var(--t-base) var(--ease),transform var(--t-base) var(--ease);
+  pointer-events:none;white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#undoBar{position:fixed;left:50%;bottom:92px;z-index:95;display:flex;align-items:center;gap:12px;
+  max-width:92vw;padding:8px 8px 8px 16px;background:var(--surface-2);border:1px solid var(--line-strong);
+  border-radius:var(--r);box-shadow:0 10px 30px rgba(0,0,0,.3);
+  transform:translateX(-50%) translateY(8px);opacity:0;pointer-events:none;
+  transition:opacity var(--t-base) var(--ease),transform var(--t-base) var(--ease)}
+#undoBar.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+#undoTxt{font-size:12.5px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#undoBar button{flex:none;min-height:38px;padding:0 13px;border:1px solid var(--line-strong);border-radius:var(--r);
+  color:var(--accent);font-size:12.5px;font-weight:600;letter-spacing:.03em}
+#undoBar button:active{background:var(--surface-3)}
+.hidden{display:none!important}
+
+@media (min-width:560px){
+  .cat-grid{grid-template-columns:repeat(3,1fr)}
+  .ph-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media (min-width:768px){
+  .modal{border-radius:var(--r-sheet);margin-bottom:24px;border:1px solid var(--line-strong)}
+  .modal-mask{align-items:center;padding:24px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+/* ================= 融合层：拍摄参考（数据来自 PhotoAssistant 340 卡库） ================= */
+:root{ --gold:#c9a961; --gold-dim:rgba(201,169,97,.5); --gold-soft:rgba(201,169,97,.1); }
+html.light{ --gold:#8a6a1f; --gold-dim:rgba(138,106,31,.45); --gold-soft:rgba(138,106,31,.09); }
+
+.rc-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--soft);
+  border:1px solid var(--line);padding:2px 6px;border-radius:var(--r)}
+.chip.g{color:var(--gold);border-color:var(--gold-dim)}
+
+.solar{border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:0 0 22px;background:linear-gradient(180deg,var(--gold-soft),transparent 70%)}
+.solar-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.solar-head h3{font-family:var(--serif);font-size:16px;font-weight:700}
+.solar-head .sc{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--muted);white-space:nowrap}
+.solar-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:13px}
+.solar-cell{border-top:1px solid var(--line);padding-top:8px}
+.solar-cell .sk{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.solar-cell .sv{font-family:var(--mono);font-size:17px;color:var(--ink);letter-spacing:.02em;margin-top:3px;font-variant-numeric:tabular-nums}
+.solar-cell.gold .sv{color:var(--gold)}
+.solar-note{font-size:11.5px;color:var(--muted);margin-top:11px;line-height:1.7}
+.solar-note b{color:var(--soft);font-weight:500}
+.cityrow{display:flex;gap:8px;margin-top:12px}
+.cityrow select{flex:1;min-width:0;min-height:44px;border:1px solid var(--line);border-radius:var(--r);
+  background:transparent;color:var(--ink);padding:0 10px;font:inherit;font-size:13.5px;-webkit-appearance:none;appearance:none}
+.cityrow select:focus{outline:none;border-color:var(--gold)}
+.cityrow .btn{flex:none;min-height:44px}
+
+.ov-grid{position:absolute;z-index:4;pointer-events:none;display:none;opacity:0}
+.ov-grid.show{display:block;opacity:1}
+.ov-grid svg{width:100%;height:100%;display:block}
+.ov-btn.on{color:var(--gold)}
+.shotcard h3{font-family:var(--serif);font-size:20px;font-weight:700;margin-bottom:4px}
+.shotcard .sc-sub{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:.06em;margin-bottom:14px}
+.shotcard .sc-row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.7}
+.shotcard .sc-row dt{flex:0 0 52px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;padding-top:3px}
+.shotcard .sc-row dd{flex:1;min-width:0;color:var(--soft)}
+</style>
+</head>
+<body>
+<script>try{if(localStorage.getItem("wpl_theme")==="light")document.documentElement.classList.add("light");}catch(e){}</script>
+<div id="app">
+  <header id="topbar"></header>
+  <main id="view"></main>
+  <nav id="tabbar"></nav>
+</div>
+
+<div id="ov">
+  <div class="ov-top">
+    <button class="ov-btn" id="ovClose" aria-label="关闭"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="t" id="ovTitle"></div>
+    <div class="n" id="ovCounter"></div>
+    <button class="ov-btn" id="ovGridBtn" aria-label="构图辅助线" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="1.5"/><path d="M9.2 3.5v17M14.8 3.5v17M3.5 9.2h17M3.5 14.8h17"/></svg></button>
+    <button class="ov-btn" id="ovShootBtn" aria-label="连续翻阅"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8 7l1.5-2.5h5L16 7"/><circle cx="12" cy="13.5" r="3.5"/></svg></button>
+  </div>
+  <div class="ov-stage" id="ovStage">
+    <div class="ov-grid" id="ovGrid"></div>
+    <button class="ov-zone prev" id="ovPrev" type="button" aria-label="上一张"><span class="ov-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span></button>
+    <button class="ov-zone next" id="ovNext" type="button" aria-label="下一张"><span class="ov-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button>
+  </div>
+  <div class="ov-bottom">
+    <button class="ov-fav" id="ovFav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.3-9A5.4 5.4 0 0 1 12 6.6a5.4 5.4 0 0 1 9.3 4.9c-1.8 4.4-9.3 9-9.3 9z"/></svg><span>收藏</span></button>
+    <button class="ov-fav" id="ovInfo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg><span>说明</span></button>
+  </div>
+</div>
+
+<div class="modal-mask" id="shotMask">
+  <div class="modal" id="shotBody">
+    <h3>拍摄参考</h3>
+    <p>这张没有对应的要点卡。</p>
+    <div style="display:flex;justify-content:flex-end;margin-top:18px"><button class="btn btn-accent" id="shotOk">知道了</button></div>
+  </div>
+</div>
+
+<div class="modal-mask" id="installMask">
+  <div class="modal">
+    <h3>装到手机</h3>
+    <p style="margin-bottom:12px">把本页加到手机主屏幕后，就像原生 App 一样全屏使用，照片和数据都存在本机。</p>
+    <div class="step"><b>iPhone（Safari）：</b>打开本页 → 点底部「分享」按钮 → 选择「添加到主屏幕」→ 确认。</div>
+    <div class="step"><b>安卓（Chrome / 自带浏览器）：</b>打开本页 → 右上角「⋯」菜单 → 选择「添加到主屏幕」或「安装应用」→ 确认。</div>
+    <div class="step"><b>提示：</b>替换过照片、存了收藏后，想换设备使用，请先在「我的 → 数据备份」导出数据。</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:18px"><button class="btn btn-accent" id="installOk">知道了</button></div>
+  </div>
+</div>
+
+<input type="file" id="photoInput" accept="image/*" hidden>
+<input type="file" id="importInput" accept="application/json,.json" hidden>
+
+<div class="modal-mask" id="localTipMask">
+  <div class="modal">
+    <h3>提醒</h3>
+    <p>这里的照片只存在你手机本地，不会上传到服务器。换手机或清理浏览器数据后，自建的照片会丢失，重要样片请保留原图。</p>
+    <div style="display:flex;justify-content:flex-end;margin-top:18px"><button class="btn btn-accent" id="localTipOk">知道了</button></div>
+  </div>
+</div>
+
+<div class="modal-mask" id="legalMask">
+  <div class="modal legal-modal" role="dialog" aria-modal="true" aria-labelledby="legalTitle">
+    <button class="legal-x" id="legalX" aria-label="关闭免责声明"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h3 id="legalTitle">版权与免责声明</h3>
+    <div class="legal-copy">
+      <p>本APP仅用于姿势创意参考学习。APP内画面为创意再创作，灵感来源于网络公开素材，全部原始作品版权、肖像权归原作者/当事人所有。</p>
+      <p>您可前往抖音、小红书识图查找原作，欢迎大家支持原创摄影师。</p>
+      <p>如您是作品权利人（摄影师、画面人物本人或合法授权代理人），认为APP内内容侵害您合法权益，请联系<br><a class="legal-mail" href="mailto:2053076454@qq.com">2053076454@qq.com</a><br>我们将在收到符合要求材料后的合理期限内下架对应内容。</p>
+    </div>
+    <div class="legal-actions"><button class="btn btn-accent" id="legalOk">我知道了</button></div>
+  </div>
+</div>
+
+<div class="modal-mask" id="confirmMask">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMsg">
+    <h3 id="confirmTitle">确认删除</h3>
+    <p id="confirmMsg"></p>
+    <div class="modal-acts">
+      <button class="btn btn-line" type="button" id="confirmNo">取消</button>
+      <button class="btn btn-accent" type="button" id="confirmYes">删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="promptMask">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="promptTitle">
+    <h3 id="promptTitle">新增清单分组</h3>
+    <label class="field-label" for="promptInput">分组名称</label>
+    <input class="field-input" id="promptInput" type="text" maxlength="20" autocomplete="off" enterkeyhint="done">
+    <p class="field-hint">例如：户外应急、灯光备用</p>
+    <p class="field-err" id="promptErr">先输入一个分组名称</p>
+    <div class="modal-acts">
+      <button class="btn btn-line" type="button" id="promptNo">取消</button>
+      <button class="btn btn-accent" type="button" id="promptYes">添加</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="undoBar" role="status" aria-live="polite"><span id="undoTxt"></span><button type="button" id="undoBtn">撤销</button></div>
+
+<script>
+"use strict";
+/* ================= 数据 ================= */
+var SCENES = [
+  {id:"wedding", name:"婚礼跟拍", en:"WEDDING", groups:["bride","groom"],
+   tag:"备婚 / 接亲 / 仪式 / 敬酒",
+   desc:"从晨袍、接亲到誓言敬酒，全流程样片姿势解构", c:["#D4AF37","#18181C"],
+   cover:"img/_cover/scene_hunligenpai.jpg",
+   defaultImg:"img/_cover/scene_hunligenpai.jpg"},
+  {id:"peipai", name:"陪拍 · 探店纪实", en:"COMPANION", groups:["peipai"],
+   tag:"街头 / 咖啡馆 / 情绪抓拍",
+   desc:"随走随拍，轻松自然的日常走姿与互动打卡", c:["#C98A6B","#18181C"],
+   defaultImg:"img/_cover/scene_peipai.jpg"},
+  {id:"pengpai", name:"商业棚拍", en:"STUDIO", groups:["pengpai"],
+   tag:"纯色 / 肖像 / 布光质感",
+   desc:"高级时尚姿势、肖像硬照与轮廓布光参考", c:["#8D8C84","#18181C"],
+   defaultImg:"img/_cover/scene_pengpai.jpg"},
+  {id:"cos", name:"COSPLAY · 角色还原", en:"COSPLAY", groups:["cos"],
+   tag:"漫展 / 布光 / 场景复现",
+   desc:"漫展场照、棚内布光与外景复现的角色氛围指南", c:["#7A6A9E","#18181C"],
+   defaultImg:"img/_cover/scene_cos.jpg"}
+];
+var SCENE_FIND = {};
+SCENES.forEach(function(s){ SCENE_FIND[s.id] = s; });
+var GROUP_NAME = {bride:"新娘", groom:"新郎", peipai:"陪拍", pengpai:"棚拍", cos:"COS"};
+
+var CATS = {
+  bride: [
+    {id:"dinghun", name:"订婚", n:8, c:["#D9A87E","#EFD9C2"]},
+    {id:"lingzheng", name:"领证", n:8, c:["#B85C50","#E5B0A6"]},
+    {id:"chenpao", name:"晨袍", n:10, c:["#B9C4B0","#E6EBDF"]},
+    {id:"xiuhe", name:"秀禾", n:10, c:["#B8503C","#E3B28E"]},
+    {id:"fumu", name:"父母/伴娘团", n:8, c:["#AEA6C9","#DCD6EC"]},
+    {id:"jieqin", name:"接亲/合影", n:10, c:["#D98A4E","#F0CDA8"]},
+    {id:"chumen", name:"出门上车", n:8, c:["#4E8A86","#BBD8D3"]},
+    {id:"yishi", name:"仪式摆拍", n:10, c:["#4C6B53","#B8C9B0"]},
+    {id:"yishizhua", name:"仪式抓拍", n:8, c:["#5B6E96","#C3CDE3"]},
+    {id:"qunxiang", name:"群像", n:6, c:["#7C8286","#D2D6D8"]},
+    {id:"jingjiu", name:"敬酒服", n:8, c:["#8E3B52","#D8A5B4"]},
+    {id:"firstlook", name:"First Look", n:6, c:["#7E96A8","#CDD9E0"]},
+    {id:"huazhuang", name:"化妆", n:6, c:["#A98AA0","#E0CFDB"]}
+  ],
+  groom: [
+    {id:"zhunbei", name:"新郎准备", n:6, c:["#6E7B8C","#CBD4DE"]},
+    {id:"jieqin", name:"接亲环节", n:6, c:["#D98A4E","#F0CDA8"]},
+    {id:"waijing", name:"外景", n:6, c:["#6E8F5F","#C6D6B8"]},
+    {id:"yishi", name:"仪式", n:6, c:["#4C6B53","#B8C9B0"]},
+    {id:"jingjiu", name:"敬酒", n:4, c:["#8E3B52","#D8A5B4"]},
+    {id:"qunxiang", name:"合影群像", n:4, c:["#7C8286","#D2D6D8"]}
+  ],
+  peipai: [
+    {id:"jietou", name:"街头漫步", n:8, c:["#D9A87E","#F2DFC8"]},
+    {id:"kafei", name:"咖啡店", n:8, c:["#C7A48A","#EDE0D2"]},
+    {id:"gongyuan", name:"公园绿地", n:8, c:["#7E9A6B","#CFDCC0"]},
+    {id:"shangchang", name:"商场室内", n:6, c:["#9AA3B4","#D8DEE8"]},
+    {id:"yejing", name:"夜景霓虹", n:6, c:["#4A4E7A","#B9A8D6"]}
+  ],
+  pengpai: [
+    {id:"chunse", name:"纯色背景", n:8, c:["#C9C2B4","#EFEAE0"]},
+    {id:"yingguang", name:"硬光轮廓", n:6, c:["#7B7F8A","#CDD1D8"]},
+    {id:"zazhi", name:"杂志硬照", n:6, c:["#3D3F45","#8E9298"]}
+  ],
+  cos: [
+    {id:"changzhao", name:"场照", n:8, c:["#B9A6C4","#E4DCEA"]},
+    {id:"buguang", name:"棚内布光", n:8, c:["#4F5B78","#BCC5DC"]},
+    {id:"fujing", name:"外景复现", n:6, c:["#5E8A7A","#BFD8CE"]}
+  ]
+};
+var DEFAULT_GEAR = [
+  {g:"相机与镜头", items:[
+    {t:"主机身（双卡槽）", d:0},{t:"备用机身", d:0},
+    {t:"24-70mm F2.8", d:0},{t:"85mm F1.4", d:0},
+    {t:"35mm F1.4", d:0},{t:"70-200mm（可选）", d:0}]},
+  {g:"灯光", items:[
+    {t:"机顶闪光灯 ×2", d:0},{t:"引闪器 + 接收器", d:0},
+    {t:"反光板", d:0},{t:"LED 补光灯棒", d:0},{t:"灯架 ×2", d:0}]},
+  {g:"存储与电源", items:[
+    {t:"电池 ×4（满电）", d:0},{t:"电池充电器", d:0},
+    {t:"SD 卡 ×4", d:0},{t:"读卡器", d:0},{t:"移动电源", d:0}]},
+  {g:"其他", items:[
+    {t:"三脚架", d:0},{t:"备用背带", d:0},{t:"白平衡卡", d:0},
+    {t:"针线包 / 别针", d:0},{t:"创可贴", d:0},{t:"零食与水", d:0}]}
+];
+
+
+/* ================= 融合层 · 拍摄参考数据（PhotoAssistant 340 卡库） ================= */
+var SHOT_DB = {"wedding-04":{"t":"牵手局部特写","s":"85mm 拍新人牵手和戒指,背景虚化","e":"手势亲密,细节温柔","r":"局部能降低摆拍尴尬","a":"提醒手放松,戒指朝镜头","f":"85mm","ap":"f/2.8","c":"三分法,手在交叉点","l":"侧前柔光","ct":"RULE_OF_THIRDS"},"wedding-06":{"t":"交换戒指瞬间","s":"135mm 从侧面抓手部动作和表情","e":"动作清晰,情绪集中","r":"交换戒指是仪式关键节点","a":"快门 1/250s 以上,不要错过","f":"135mm","ap":"f/2.8","c":"三分法,手和脸形成对角","l":"现场柔光","ct":"RULE_OF_THIRDS"},"wedding-01":{"t":"新娘晨袍窗光","s":"50mm 在窗边拍新娘准备,手部整理头纱","e":"肤色柔和,准备感真实","r":"晨间准备是婚礼故事开端","a":"房间杂乱时用窗帘/门框遮挡","f":"50mm","ap":"f/2.0","c":"三分法,脸朝窗留白","l":"侧窗柔光","ct":"RULE_OF_THIRDS"},"wedding-13":{"t":"婚鞋与捧花平铺","s":"50mm 俯拍婚鞋、捧花、请柬","e":"物件整齐,婚礼风格明确","r":"细节平铺补足故事物证","a":"找窗光和干净地面","f":"50mm","ap":"f/4.0","c":"三分法,物件成对角","l":"侧窗光","ct":"RULE_OF_THIRDS"},"hanfu-01":{"t":"扇面遮面","s":"85mm 半身,团扇遮半脸","e":"含蓄婉约,古典美","r":"扇面是古风经典道具","a":"无扇时用袖口/手帕替代","f":"85mm","ap":"f/2.0","c":"三分法,扇面引导视线","l":"侧前柔光,窗光最佳","ct":"RULE_OF_THIRDS"},"hanfu-06":{"t":"执伞雨中","s":"50mm 撑油纸伞,雨丝氛围","e":"雨丝朦胧,诗意浓","r":"伞是古风意境道具","a":"无雨用喷雾造雨丝感","f":"50mm","ap":"f/2.8","c":"居中,伞顶留空间","l":"阴天柔光,雨丝侧光","ct":"CENTERED"},"wedding-10":{"t":"全家福层次排列","s":"35mm f/8 拍家庭合影,前后排错位","e":"人人清晰,关系完整","r":"合影是交付刚需","a":"先排长辈,喊口令连拍三张","f":"35mm","ap":"f/8.0","c":"居中,群组平衡","l":"顺光均匀","ct":"CENTERED"},"wedding-17":{"t":"父母拥抱情绪","s":"85mm 抓拥抱时父母表情","e":"亲情浓,画面有重量","r":"长辈情绪是婚礼深层故事","a":"保持距离长焦抓,别干预","f":"85mm","ap":"f/2.0","c":"三分法,表情在交叉点","l":"柔侧光","ct":"RULE_OF_THIRDS"},"wedding-03":{"t":"First Look 反应","s":"85mm 长焦拍第一眼表情,连拍","e":"情绪自然爆发,背景干净","r":"第一反应不可复制","a":"提前站在侧前方,不要挡路线","f":"85mm","ap":"f/2.0","c":"三分法,眼神在交叉点","l":"柔光或背阴","ct":"RULE_OF_THIRDS"},"wedding-07":{"t":"誓言泪光特写","s":"85mm 拍读誓词时眼泪和笑容","e":"泪光可见,情绪饱满","r":"誓言是婚礼叙事核心","a":"静音快门,别打断仪式","f":"85mm","ap":"f/2.0","c":"三分法,眼睛在交叉点","l":"侧光,眼神光","ct":"RULE_OF_THIRDS"},"wedding-09":{"t":"撒花退场动态","s":"35mm 低角度拍花瓣飞起和新人退场","e":"花瓣包围,画面热烈","r":"动态退场最有庆祝感","a":"提高快门,让助手抛花均匀","f":"35mm","ap":"f/4.0","c":"低角度,新人向镜头走来","l":"户外顺光","ct":"LOW_ANGLE"},"wedding-05":{"t":"仪式入场纵深","s":"70mm 拍新人沿通道走来,宾客虚化成框","e":"通道有纵深,人物高光","r":"仪式入场需要庄重和方向感","a":"预对焦通道中段,连拍","f":"70mm","ap":"f/2.8","c":"引导线,通道指向新人","l":"现场光,逆侧光","ct":"LEADING_LINES"},"street-12":{"t":"街头肖像抓拍","s":"50mm 近距请求或盲拍,1/250s","e":"面部神态真,环境交代","r":"街头肖像有现场真实感","a":"礼貌询问或长焦偷拍,别侵犯","f":"50mm","ap":"f/2.8","c":"三分法,脸在交叉点","l":"顺光,眼神亮","ct":"RULE_OF_THIRDS"},"street-01":{"t":"决定性瞬间","s":"35mm 预对焦街头,等人进入交叉点按下","e":"人物恰好踏入构图,瞬间凝固","r":"卡蒂埃式决定性瞬间,故事点","a":"预对焦 zone focus,快门预按","f":"35mm","ap":"f/8.0","c":"三分法,交叉点等主体","l":"顺光或漫射,保证快门","ct":"RULE_OF_THIRDS"},"wedding-14":{"t":"宾客敬酒抓拍","s":"50mm 抓敬酒笑声和碰杯","e":"关系自然,气氛热闹","r":"婚礼不只有新人,宾客是温度","a":"用较高 ISO 保快门","f":"50mm","ap":"f/2.8","c":"三分法,杯子和脸成对角","l":"宴会现场光","ct":"RULE_OF_THIRDS"},"wedding-18":{"t":"场布空镜全景","s":"24mm 在宾客入场前拍宴会厅全景","e":"布置完整,空间大气","r":"空镜给相册建立场景","a":"提前 15 分钟完成,避免人乱入","f":"24mm","ap":"f/8.0","c":"引导线,桌线通向舞台","l":"现场灯+环境光","ct":"LEADING_LINES"},"product-08":{"t":"纺织纹理细节","s":"90mm 侧光拍布料纹理","e":"纹理分明,质感强","r":"侧光显纺织纹理","a":"侧光低角度,纹理锐","f":"90mm","ap":"f/8.0","c":"三分法,纹理交叉点","l":"侧光,低角度","ct":"RULE_OF_THIRDS"},"product-10":{"t":"木工细节手作","s":"90mm 侧光拍木纹/榫卯","e":"木纹温润,手作感","r":"木工靠纹理讲故事","a":"侧光打木纹,暖白平衡","f":"90mm","ap":"f/5.6","c":"三分法,细节交叉点","l":"侧光,暖光","ct":"RULE_OF_THIRDS"},"portrait-06":{"t":"眼神光特写补光","s":"90mm 微距对眼,反光板制造圆眼神光","e":"瞳孔映出圆形柔光斑","r":"圆眼神光比窗光条状更讨喜","a":"无反光板用柔光罩手机灯,离脸 50cm","f":"90mm","ap":"f/4.0","c":"居中,瞳孔在画面中心","l":"柔光前侧,反光板低角度上扬","ct":"CENTERED"},"portrait-12":{"t":"双手局部特写","s":"90mm 对焦交叠的手,脸虚化在后","e":"手部情绪独立成片","r":"手会说话,局部更显细腻","a":"手僵时让模特握松散物(花/杯)","f":"90mm","ap":"f/2.8","c":"三分法,手在交叉点","l":"柔光顶前,手部无硬阴影","ct":"RULE_OF_THIRDS"},"portrait-01":{"t":"特写眼神光","s":"用 85mm 在 30cm 内对焦眼部,保留一瞳眼神光","e":"睫毛分毫毕现,瞳孔映出柔和高光","r":"眼神光是情绪入口,拉近观者距离","a":"模特可侧转找窗光,无反光板时用手机屏补","f":"85mm","ap":"f/2.0","c":"居中构图,眼睛在三分线上交叉点","l":"侧前窗光,眼神光落在瞳孔上侧","ct":"RULE_OF_THIRDS"},"portrait-05":{"t":"剪影全身","s":"对亮天空测光锁定,人物全黑入框","e":"纯黑轮廓,姿态优先","r":"剪影剥离细节,靠姿态传情","a":"让模特动作夸张,肢体分开才不糊成一团","f":"50mm","ap":"f/8.0","c":"剪影,地平线压在 1/3","l":"逆光,天空高光","ct":"SILHOUETTE"},"landscape-18":{"t":"逆光草原剪影","s":"70mm 对天空测光,草坡和人马成剪影","e":"轮廓清晰,夕阳情绪浓","r":"剪影适合开阔地简化画面","a":"让主体分开避免糊成一团","f":"70mm","ap":"f/8.0","c":"剪影,地平线下压","l":"日落逆光","ct":"SILHOUETTE"},"landscape-01":{"t":"金色山脊侧光","s":"日出后用 70mm 拍山脊层次,主峰落在右上交叉点","e":"山体层层递进,边缘被金光勾亮","r":"侧光能把地形纹理刻出来","a":"云挡太阳时等光扫过山脊再按快门","f":"70mm","ap":"f/8.0","c":"三分法,主峰在交叉点","l":"日出侧光,低角度","ct":"RULE_OF_THIRDS"},"event-07":{"t":"大合影排列","s":"35mm 排层错位,f/8 全清","e":"人人清晰,层次整齐","r":"合影是活动标配","a":"小光圈对中排,喊看镜头","f":"35mm","ap":"f/8.0","c":"三分法,群组居中","l":"顺光均匀","ct":"RULE_OF_THIRDS"},"event-01":{"t":"致辞抓拍表情","s":"85mm 长焦抓发言人表情,1/125s","e":"面部神态真,背景虚","r":"致辞是活动核心,抓情绪","a":"舞台光杂,白平衡手动","f":"85mm","ap":"f/2.8","c":"三分法,脸在交叉点","l":"舞台侧光","ct":"RULE_OF_THIRDS"},"street-02":{"t":"框架构图窥视","s":"门框窗洞做前景框,主体在框内","e":"前景框引导视线入画","r":"框架聚焦主体,增加纵深","a":"框太暗减曝或后期压暗前景","f":"50mm","ap":"f/4.0","c":"框中框,主体居框中","l":"侧光,框暗内亮","ct":"FRAME_WITHIN_FRAME"},"landscape-02":{"t":"前景岩石纵深","s":"24mm 贴近岩石做前景,远山压在上三分线","e":"前景夸张,画面有进入感","r":"广角前景能建立空间尺度","a":"前景太乱就换一块形状干净的石头","f":"24mm","ap":"f/11","c":"引导线,岩石指向远山","l":"晨昏柔侧光","ct":"LEADING_LINES"},"commercial-01":{"t":"纯色背景半身","s":"85mm 纯灰背景,半身商务","e":"干净专业,主体突出","r":"纯色背景是商业标准","a":"无背景纸用白墙压暗","f":"85mm","ap":"f/5.6","c":"居中,对称构图","l":"柔光箱前光+轮廓光","ct":"CENTERED"},"commercial-02":{"t":"交叉双臂正面","s":"50mm 正面交叉双臂","e":"自信权威,商务范","r":"交叉双臂显专业气场","a":"姿势僵硬时手插兜","f":"50mm","ap":"f/4","c":"居中,正面构图","l":"柔光均匀,轮廓光分离","ct":"CENTERED"},"street-07":{"t":"雨夜反光霓虹","s":"雨后蹲低拍水洼倒映霓虹,1/60s","e":"霓虹在水中镜像,双倍绚烂","r":"雨夜反光是街拍金矿","a":"无雨自带水瓶泼地制造反光","f":"35mm","ap":"f/4.0","c":"三分法,倒影占下 1/3","l":"夜混合光,霓虹","ct":"RULE_OF_THIRDS"},"street-17":{"t":"夜市霓虹招牌","s":"35mm 仰拍霓虹招牌下人影","e":"霓虹色彩浓,招牌醒目","r":"夜市霓虹是色彩符号","a":"快门 1/60s 防抖,ISO 1600","f":"35mm","ap":"f/2.8","c":"三分法,招牌在上 1/3","l":"夜霓虹光","ct":"RULE_OF_THIRDS"},"portrait-17":{"t":"群体合影层次","s":"35mm 排成 2-3 层错位,f/8 全清","e":"前后排错落,人人清晰","r":"错位避免遮挡,f/8 保证景深","a":"人数多用 50mm,小光圈对中排","f":"35mm","ap":"f/8.0","c":"三分法,群组居中偏左","l":"顺光均匀,避免阴阳脸","ct":"RULE_OF_THIRDS"},"portrait-14":{"t":"运动抓拍连拍","s":"50mm 跟焦连拍奔跑,1/1000s 凝固","e":"发丝衣角飞扬,动态鲜活","r":"高速抓拍定格情绪瞬间","a":"跟焦不稳用 zone 对焦预对一点","f":"50mm","ap":"f/2.8","c":"三分法,运动方向留前方空间","l":"顺光保证快门,避免逆光发灰","ct":"RULE_OF_THIRDS"},"commercial-07":{"t":"城市背景","s":"50mm 城市天际线背景","e":"商务都市感,场景交代","r":"城市背景体现商务语境","a":"无天际线用建筑线条","f":"50mm","ap":"f/4","c":"三分法,人物前景","l":"逆光轮廓+反光板补面","ct":"RULE_OF_THIRDS"},"portrait-15":{"t":"窗光侧脸伦勃朗","s":"窗边侧坐,对脸测光,鼻影成三角光斑","e":"伦勃朗三角光,古典立体","r":"窗光如柔光箱,三角光显骨相","a":"光太硬拉纱帘柔化,或退离窗 1 米","f":"85mm","ap":"f/2.0","c":"三分法,侧脸朝窗","l":"侧前窗光,伦勃朗光","ct":"RULE_OF_THIRDS"},"retro-01":{"t":"复古西装半身","s":"85mm 素色背景拍复古西装半身","e":"沉稳端正,像年代杂志肖像","r":"剪裁、发型与暖棕色调建立复古身份","a":"用驼色西装或宽肩外套替代","f":"85mm","ap":"f/2.8","c":"居中半身","l":"暖色柔侧光","ct":"CENTERED"},"retro-06":{"t":"旗袍妆容特写","s":"85mm 拍复古卷发、红唇与旗袍领口","e":"五官精致,年代特征明确","r":"妆发和衣领是复古辨识重点","a":"普通服装可强化红唇与卷发","f":"85mm","ap":"f/2.0","c":"居中近景","l":"正面柔光","ct":"CENTERED"},"landscape-10":{"t":"云海日出层次","s":"70mm 拍云海与山头,太阳刚出地平线","e":"云层翻涌,山头如岛","r":"日出高光给云海体积","a":"提前到机位,保留高光不过曝","f":"70mm","ap":"f/8.0","c":"三分法,太阳偏上交叉点","l":"日出逆侧光","ct":"RULE_OF_THIRDS"},"retro-17":{"t":"老街漫步","s":"50mm 在旧街巷抓拍自然行走","e":"有生活气,环境叙事完整","r":"行走动作避免复古造型僵硬","a":"选择旧楼或窄巷","f":"50mm","ap":"f/2.8","c":"巷道引导线","l":"阴天漫射光","ct":"LEADING_LINES"},"landscape-05":{"t":"森林光束路径","s":"35mm 等阳光穿过树林,人物或小路入光束","e":"光束有方向,树林显神秘","r":"逆光尘雾能显示空气感","a":"无雾时寻找湿润清晨或逆光边缘","f":"35mm","ap":"f/5.6","c":"引导线,小路通向光束","l":"逆光,林间光束","ct":"LEADING_LINES"},"street-03":{"t":"低视角街景","s":"蹲下贴地拍走过的脚/水洼倒影","e":"低角显日常陌生感","r":"低角重估熟悉场景","a":"用翻转屏或盲拍,防溅水","f":"24mm","ap":"f/8.0","c":"三分法,地平线压上 1/3","l":"顺光,倒影需顺光","ct":"LOW_ANGLE"},"street-08":{"t":"橱窗倒影叠影","s":"贴橱窗玻璃拍,内外叠影","e":"街景与店内商品叠,超现实","r":"玻璃叠影制造梦境层","a":"避开自己入镜,侧 30°贴玻璃","f":"50mm","ap":"f/2.8","c":"框中框,叠影居中","l":"侧光,玻璃反光","ct":"FRAME_WITHIN_FRAME"},"landscape-07":{"t":"沙丘曲线极简","s":"135mm 压缩沙丘曲线,一人点缀","e":"曲线柔顺,人物显尺度","r":"长焦抽离环境,突出线条","a":"等侧光让沙脊有阴影","f":"135mm","ap":"f/8.0","c":"黄金螺旋,人物在收敛点","l":"日落侧光,长影","ct":"GOLDEN_SPIRAL"},"hanfu-11":{"t":"袖遮半脸","s":"85mm 广袖遮面露眼","e":"含蓄神秘,眼部吸睛","r":"袖遮是古风经典姿态","a":"袖短用手帕替代","f":"85mm","ap":"f/2.0","c":"眼部在三分线","l":"侧前光,眼神光","ct":"RULE_OF_THIRDS"},"retro-02":{"t":"黄昏回眸","s":"85mm 在黄昏逆光中拍侧背回眸","e":"轮廓温暖,情绪像旧电影片段","r":"逆光与棕色服装强化年代感","a":"让人物背向低角度暖光后轻微回头","f":"85mm","ap":"f/2.0","c":"侧背三分线","l":"黄昏侧逆光","ct":"RULE_OF_THIRDS"},"event-02":{"t":"互动瞬间自然","s":"50mm 抓两人互动/握手,1/250s","e":"互动生动,无摆拍感","r":"互动是活动温度所在","a":"预对焦互动点,连拍","f":"50mm","ap":"f/2.8","c":"三分法,互动在交叉点","l":"顺光,快门够","ct":"RULE_OF_THIRDS"},"event-06":{"t":"签到处迎宾","s":"35mm 拍签到来宾互动","e":"迎宾自然,签到即故事","r":"签到处是活动开端","a":"别挡签到的流,侧拍","f":"35mm","ap":"f/4.0","c":"三分法,来宾在交叉点","l":"顺光,均匀","ct":"RULE_OF_THIRDS"},"sports-05":{"t":"网球击球表情","s":"200mm 抓球拍击球和脸部表情","e":"球拍形变,表情专注","r":"击球点和表情共同讲动作","a":"盯球员习惯击球位置","f":"200mm","ap":"f/2.8","c":"三分法,击球点在交叉点","l":"硬光,高速快门","ct":"RULE_OF_THIRDS"},"sports-17":{"t":"接力交棒瞬间","s":"200mm 抓接力棒交接一刻","e":"两人动作交汇,张力集中","r":"交棒决定比赛节奏","a":"预对焦接力区,高速连拍","f":"200mm","ap":"f/2.8","c":"三分法,交棒在交叉点","l":"户外顺光","ct":"RULE_OF_THIRDS"}};
+var CAT_TIPS = {"bride:dinghun":{"scene":"wedding","shots":["wedding-04","wedding-06"]},"bride:lingzheng":{"scene":"wedding","shots":["wedding-04","wedding-01"]},"bride:chenpao":{"scene":"wedding","shots":["wedding-01","wedding-13"]},"bride:xiuhe":{"scene":"hanfu","shots":["hanfu-01","hanfu-06"]},"bride:fumu":{"scene":"wedding","shots":["wedding-10","wedding-17"]},"bride:jieqin":{"scene":"wedding","shots":["wedding-03","wedding-07"]},"bride:chumen":{"scene":"wedding","shots":["wedding-09","wedding-05"]},"bride:yishi":{"scene":"wedding","shots":["wedding-03","wedding-05"]},"bride:yishizhua":{"scene":"street","shots":["street-12","street-01"]},"bride:qunxiang":{"scene":"wedding","shots":["wedding-10","wedding-03"]},"bride:jingjiu":{"scene":"wedding","shots":["wedding-14","wedding-18"]},"bride:firstlook":{"scene":"wedding","shots":["wedding-03","wedding-06"]},"bride:huazhuang":{"scene":"portrait","shots":["portrait-06","portrait-12"]},"groom:zhunbei":{"scene":"portrait","shots":["portrait-01","portrait-05"]},"groom:jieqin":{"scene":"wedding","shots":["wedding-03","wedding-09"]},"groom:waijing":{"scene":"landscape","shots":["landscape-18","landscape-01"]},"groom:yishi":{"scene":"wedding","shots":["wedding-03","wedding-05"]},"groom:jingjiu":{"scene":"event","shots":["event-07","event-01"]},"groom:qunxiang":{"scene":"event","shots":["event-07","event-01"]},"peipai:jietou":{"scene":"street","shots":["street-01","street-12"]},"peipai:kafei":{"scene":"street","shots":["street-01","street-02"]},"peipai:gongyuan":{"scene":"landscape","shots":["landscape-01","landscape-02"]},"peipai:shangchang":{"scene":"commercial","shots":["commercial-01","commercial-02"]},"peipai:yejing":{"scene":"street","shots":["street-07","street-17"]},"peipai:shuangren":{"scene":"portrait","shots":["portrait-17","portrait-14"]},"pengpai:chunse":{"scene":"commercial","shots":["commercial-01","commercial-07"]},"pengpai:baiqiang":{"scene":"commercial","shots":["commercial-01","commercial-02"]},"pengpai:rouguang":{"scene":"portrait","shots":["portrait-15","portrait-06"]},"pengpai:yingguang":{"scene":"commercial","shots":["commercial-01","commercial-02"]},"pengpai:fugu":{"scene":"retro","shots":["retro-01","retro-06"]},"pengpai:zazhi":{"scene":"commercial","shots":["commercial-01","commercial-02"]},"outdoor:haibian":{"scene":"landscape","shots":["landscape-10","landscape-18"]},"outdoor:caodi":{"scene":"landscape","shots":["landscape-01","landscape-02"]},"outdoor:laojie":{"scene":"retro","shots":["retro-17","retro-01"]},"outdoor:shanlu":{"scene":"landscape","shots":["landscape-02","landscape-05"]},"outdoor:chengshi":{"scene":"street","shots":["street-03","street-08"]},"outdoor:riluo":{"scene":"landscape","shots":["landscape-18","landscape-07"]},"cos:dingzhuang":{"scene":"hanfu","shots":["hanfu-11","hanfu-01"]},"cos:buguang":{"scene":"retro","shots":["retro-01","retro-02"]},"cos:daoju":{"scene":"product","shots":["product-08","product-10"]},"cos:fujing":{"scene":"landscape","shots":["landscape-07","landscape-01"]},"cos:tuandui":{"scene":"event","shots":["event-02","event-06"]},"cos:dongtai":{"scene":"sports","shots":["sports-05","sports-17"]}};
+var SCENE_TIPS_PA = {"bride":{"from":"wedding","title":"婚礼通用要点","points":["35mm 记录场景与仪式,85mm 抓拍情绪特写,双机双焦段最稳","仪式关键瞬间(交换、亲吻、抛花)连拍 + 预对焦到中心位","新娘妆容与戒指细节用微距特写,完整故事需大景特写交替","反光板补新娘面部阴影,逆光仪式尤为关键"],"pitfalls":["无备用机身/电池--婚礼不可重来,双机保命","后期才发现对焦点在花不在眼--大屏放大即时确认"]},"groom":{"from":"portrait","title":"人像通用要点","points":["始终对焦在靠近镜头的眼睛,这是观者视线落点","人脸朝向光源可获得干净眼神光,逆光需用反光板或手机屏补面","大光圈虚化背景时,主体距背景越远虚化越明显","全身构图脚下留空间可避免压迫感,半身构图头顶留呼吸空间"],"pitfalls":["光圈全开导致双眼只有一只清晰--收到 f/2.8~f/4 保证双眼合焦","正午顶光在眼窝鼻下产生难看阴影--改阴凉处或黄金时段拍"]},"peipai":{"from":"street","title":"街拍通用要点","points":["35mm 或 50mm 等效焦段最贴合人眼视角,既交代环境又不过分压缩","预先设定曝光(f/8、1/250s 起步)与对焦距离(区域对焦),抬手即拍","盲拍低角度或贴近胸口构图可获得更自然的临场视角","关注光影交界处、转角、橱窗反光,这些常是决定性瞬间发生地"],"pitfalls":["举相机速度过慢错过瞬间--预设参数抬手就拍,不做现场调整","广角夸张失真让路人反感--改用 50mm 等效,或退后用长焦压缩"]},"pengpai":{"from":"commercial","title":"商业拍摄通用要点","points":["纯色背景(灰/黑/白)干净专业,主体突出","柔光箱前光+轮廓光分离主体与背景","f/4-f/5.6 保证全身清晰,质感锐利","姿态自信权威,交叉双臂/前倾/侧身"],"pitfalls":["硬光产生商务不专业的阴影--用柔光箱","光圈太大导致服装不清晰--收光圈到 f/4+"]},"outdoor":{"from":"landscape","title":"风光通用要点","points":["16-35 广角铺前景营造纵深,中长焦压缩层叠山峦","前景(岩石、花草、溪流)是风光的灵魂,没有前景的画面显得平淡","黄金时段与蓝调时段光线柔和有方向,正午顶光适合拍纹理不拍大景","光圈 f/8~f/11 是锐度甜点,不必追求 f/22(衍射反而降低锐度)"],"pitfalls":["地平线倾斜--开启相机水平仪或后期校正","天空过曝--用渐变灰滤镜或包围曝光合成 HDR"]},"cos":{"from":"hanfu","title":"古风汉服通用要点","points":["古建/自然环境为背景,避开现代元素穿帮","侧光或逆光突出衣袂飘逸与发丝轮廓","道具(扇/伞/花/琴)点睛,姿态含蓄婉约","暖色调后期强化古典氛围"],"pitfalls":["现代背景穿帮破坏意境--找纯墙/古建/自然背景","姿势僵硬--引导自然互动道具或回眸"]}};
+
+function catTip(id){ return CAT_TIPS[id] || null; }
+function shotOf(id){ return SHOT_DB[id] || null; }
+
+/* 全屏「说明」弹层 */
+function refFor(id){
+  if(id.indexOf("c:") === 0) return null;
+  var p = id.split(":");
+  var t = CAT_TIPS[p[0]+":"+p[1]];
+  if(!t || !t.shots || !t.shots.length) return null;
+  return SHOT_DB[t.shots[0]] || null;
+}
+function shotCardHTML(id){
+  var s = refFor(id), cat = catOf(id);
+  if(!s) return "";
+  var h = "<div class='shotcard'><h3>"+esc(cat.name)+" · 拍摄参考</h3>"
+    + "<div class='sc-sub'>"+esc(s.t||"")+"</div>"
+    + "<div class='rc-chips' style='margin-bottom:6px'>"
+    + (s.f?"<span class='chip g'>"+esc(s.f)+"</span>":"")
+    + (s.ap?"<span class='chip'>"+esc(s.ap)+"</span>":"")
+    + (s.ct?"<span class='chip'>"+esc(s.ct)+"</span>":"")
+    + "</div>";
+  [["怎么拍",s.s],["效果",s.e],["为什么",s.r],["救场",s.a],["构图",s.c],["用光",s.l]].forEach(function(r){
+    if(!r[1]) return;
+    h += "<dl class='sc-row'><dt>"+r[0]+"</dt><dd>"+esc(r[1])+"</dd></dl>";
+  });
+  h += "</div>";
+  return h;
+}
+
+/* 构图辅助线：双色描边（暗底 + 亮金），保证黑白背景都看得清 */
+function gridStroke(d, w, color){
+  return "<path d='"+d+"' fill='none' stroke='rgba(0,0,0,.5)' stroke-width='"+(w+2.2)+"' "
+       + "stroke-linecap='round' stroke-linejoin='round' vector-effect='non-scaling-stroke'/>"
+       + "<path d='"+d+"' fill='none' stroke='"+color+"' stroke-width='"+w+"' "
+       + "stroke-linecap='round' stroke-linejoin='round' vector-effect='non-scaling-stroke'/>";
+}
+function gridCircle(cx, cy, r, color){
+  return "<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='none' stroke='rgba(0,0,0,.5)' stroke-width='4.2' vector-effect='non-scaling-stroke'/>"
+       + "<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='none' stroke='"+color+"' stroke-width='1.8' vector-effect='non-scaling-stroke'/>";
+}
+function gridSVG(type){
+  var t = String(type||"").toUpperCase();
+  var GOLD = "#e8c46a", ACC = "#e05c3f";
+  var lines = gridStroke("M333 0V1000M667 0V1000M0 333H1000M0 667H1000", 1, GOLD);
+  var fg = "";
+  if(t === "CENTERED" || t === "FRAME_WITHIN_FRAME"){
+    fg = gridStroke("M375 375H625V625H375Z", 1.3, ACC)
+       + gridStroke("M500 462V538M462 500H538", 1.1, ACC);
+  }else if(t === "RULE_OF_THIRDS" || t === "LEADING_LINES"){
+    fg = gridCircle(667, 333, 11, ACC) + gridCircle(333, 667, 8, ACC);
+  }else if(t === "GOLDEN_SPIRAL"){
+    fg = gridStroke("M666 334a166 166 0 1 1-166 166 118 118 0 1 0 118-118 84 84 0 1 1 84 84", 1.3, ACC);
+  }else if(t === "LOW_ANGLE"){
+    fg = gridStroke("M0 742H1000", 1.3, ACC) + gridStroke("M500 742V448", 1.1, ACC);
+  }else if(t === "FILL_FRAME" || t === "SILHOUETTE"){
+    fg = gridStroke("M64 64H936V936H64Z", 1.2, ACC);
+  }
+  return "<svg viewBox='0 0 1000 1000' preserveAspectRatio='none'>"+lines+fg+"</svg>";
+}
+
+/* 今日光线（本地太阳算法，NOAA 简化式） */
+var CITY = [
+  {n:"北京",lat:39.9042,lon:116.4074},{n:"上海",lat:31.2304,lon:121.4737},
+  {n:"广州",lat:23.1291,lon:113.2644},{n:"深圳",lat:22.5431,lon:114.0579},
+  {n:"成都",lat:30.5728,lon:104.0668},{n:"杭州",lat:30.2741,lon:120.1551},
+  {n:"武汉",lat:30.5928,lon:114.3055},{n:"西安",lat:34.3416,lon:108.9398},
+  {n:"南京",lat:32.0603,lon:118.7969},{n:"重庆",lat:29.5630,lon:106.5516},
+  {n:"天津",lat:39.3434,lon:117.3616},{n:"苏州",lat:31.2989,lon:120.5853},
+  {n:"长沙",lat:28.2282,lon:112.9388},{n:"青岛",lat:36.0671,lon:120.3826},
+  {n:"厦门",lat:24.4798,lon:118.0894},{n:"昆明",lat:25.0389,lon:102.7183},
+  {n:"郑州",lat:34.7466,lon:113.6254},{n:"合肥",lat:31.8206,lon:117.2272},
+  {n:"沈阳",lat:41.8057,lon:123.4315},{n:"哈尔滨",lat:45.8038,lon:126.5350},
+  {n:"大连",lat:38.9140,lon:121.6147},{n:"济南",lat:36.6512,lon:117.1201},
+  {n:"福州",lat:26.0745,lon:119.2965},{n:"南宁",lat:22.8170,lon:108.3665},
+  {n:"贵阳",lat:26.6470,lon:106.6302},{n:"兰州",lat:36.0611,lon:103.8343},
+  {n:"乌鲁木齐",lat:43.8256,lon:87.6168},{n:"拉萨",lat:29.6520,lon:91.1721},
+  {n:"呼和浩特",lat:40.8414,lon:111.7519},{n:"银川",lat:38.4872,lon:106.2309},
+  {n:"西宁",lat:36.6171,lon:101.7782},{n:"太原",lat:37.8706,lon:112.5489},
+  {n:"石家庄",lat:38.0428,lon:114.5149},{n:"南昌",lat:28.6820,lon:115.8579},
+  {n:"海口",lat:20.0444,lon:110.1999},{n:"三亚",lat:18.2528,lon:109.5119},
+  {n:"台北",lat:25.0330,lon:121.5654},{n:"香港",lat:22.3193,lon:114.1694},
+  {n:"澳门",lat:22.1987,lon:113.5439}
+];
+var GEO_KEY = "wpl_geo";
+function loadGeo(){
+  try{ var g = JSON.parse(localStorage.getItem(GEO_KEY)||"null");
+    if(g && isFinite(g.lat) && isFinite(g.lon)) return g; }catch(e){}
+  return null;
+}
+function saveGeo(g){ try{ localStorage.setItem(GEO_KEY, JSON.stringify(g)); }catch(e){} }
+function dayOfYear(d){
+  return Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(d.getFullYear(), 0, 0)) / 86400000);
+}
+function sunEvent(lat, lon, when, altDeg){
+  var rad = Math.PI/180;
+  var gamma = 2*Math.PI/365 * (dayOfYear(when) - 1);
+  var eqtime = 229.18 * (0.000075 + 0.001868*Math.cos(gamma) - 0.032077*Math.sin(gamma)
+              - 0.014615*Math.cos(2*gamma) - 0.040849*Math.sin(2*gamma));
+  var decl = 0.006918 - 0.399912*Math.cos(gamma) + 0.070257*Math.sin(gamma)
+           - 0.006758*Math.cos(2*gamma) + 0.000907*Math.sin(2*gamma)
+           - 0.002697*Math.cos(3*gamma) + 0.00148*Math.sin(3*gamma);
+  var la = lat*rad;
+  var cosH = (Math.sin(altDeg*rad) - Math.sin(la)*Math.sin(decl)) / (Math.cos(la)*Math.cos(decl));
+  if(cosH > 1 || cosH < -1) return null;
+  var ha = Math.acos(cosH)/rad;
+  return { rise: 720 - 4*(lon + ha) - eqtime, set: 720 - 4*(lon - ha) - eqtime };
+}
+function minsToLocal(mins, when){
+  var base = Date.UTC(when.getFullYear(), when.getMonth(), when.getDate());
+  return new Date(base + mins*60000);
+}
+function fmtHM(dt){
+  if(!dt) return "—";
+  var h = dt.getHours(), m = dt.getMinutes();
+  return (h<10?"0":"")+h+":"+(m<10?"0":"")+m;
+}
+function solarData(){
+  var g = loadGeo(); if(!g) return null;
+  var now = new Date();
+  var rise = sunEvent(g.lat, g.lon, now, -0.833);
+  var gold = sunEvent(g.lat, g.lon, now, 6);
+  var blue = sunEvent(g.lat, g.lon, now, -6);
+  if(!rise || !gold || !blue) return null;
+  return {
+    rise: minsToLocal(rise.rise, now), set: minsToLocal(rise.set, now),
+    goldRise: minsToLocal(gold.rise, now), goldSet: minsToLocal(gold.set, now),
+    blueRise: minsToLocal(blue.rise, now), blueSet: minsToLocal(blue.set, now)
+  };
+}
+function citySelectHTML(){
+  var g = loadGeo();
+  var sel = (g && typeof g.idx === "number" && g.idx >= 0) ? g.idx : -1;
+  var opts = CITY.map(function(c, i){
+    return "<option value='"+i+"'"+(i===sel?" selected":"")+">"+esc(c.n)+"</option>";
+  }).join("");
+  return "<div class='cityrow'>"
+    + "<select id='citySel' aria-label='选择城市'><option value=''"+(sel<0?" selected":"")+">选择城市…</option>"+opts+"</select>"
+    + "<button class='btn btn-sm btn-line' id='geoBtn'>定位</button></div>";
+}
+function solarCardHTML(){
+  var d = solarData();
+  var g = loadGeo();
+  var head = "<div class='solar-head'><h3>今日光线</h3><span class='sc'>GOLDEN / BLUE</span></div>";
+  if(!d){
+    return "<div class='solar'>" + head
+      + "<div class='solar-note'>选一个城市就能算出今天的日出、日落、黄金与蓝调时段。位置只存本机，不上传。</div>"
+      + citySelectHTML() + "</div>";
+  }
+  var where = (g && g.name) ? esc(g.name) : "当前位置";
+  return "<div class='solar'>" + head
+    + "<div class='solar-grid'>"
+    + "<div class='solar-cell'><div class='sk'>日出</div><div class='sv'>"+fmtHM(d.rise)+"</div></div>"
+    + "<div class='solar-cell'><div class='sk'>日落</div><div class='sv'>"+fmtHM(d.set)+"</div></div>"
+    + "<div class='solar-cell gold'><div class='sk'>黄金 · 晨</div><div class='sv'>"+fmtHM(d.goldRise)+"</div></div>"
+    + "<div class='solar-cell gold'><div class='sk'>黄金 · 昏</div><div class='sv'>"+fmtHM(d.goldSet)+"</div></div>"
+    + "<div class='solar-cell'><div class='sk'>蓝调 · 晨</div><div class='sv'>"+fmtHM(d.blueRise)+"</div></div>"
+    + "<div class='solar-cell'><div class='sk'>蓝调 · 昏</div><div class='sv'>"+fmtHM(d.blueSet)+"</div></div>"
+    + "</div>"
+    + "<div class='solar-note'>按 <b>"+where+"</b> 本地计算 · 太阳高度 <b>6°</b> 黄金、<b>−6°</b> 蓝调</div>"
+    + citySelectHTML()
+    + "</div>";
+}
+function bindGeo(){
+  var sel = $("citySel");
+  if(sel){
+    sel.onchange = function(){
+      var i = parseInt(sel.value, 10);
+      if(isNaN(i) || !CITY[i]) return;
+      saveGeo({ lat: CITY[i].lat, lon: CITY[i].lon, name: CITY[i].n, idx: i, ts: Date.now() });
+      toast("已切到 " + CITY[i].n);
+      renderGear();
+    };
+  }
+  var b = $("geoBtn");
+  if(!b) return;
+  b.onclick = function(){
+    if(!navigator.geolocation){ toast("这个浏览器不支持定位，先用城市选择"); return; }
+    var host = location.hostname;
+    var insecure = (location.protocol === "http:" && host !== "localhost" && host !== "127.0.0.1");
+    if(insecure){
+      toast("http 下浏览器不给定位权限，先用上面的城市选择");
+      return;
+    }
+    b.textContent = "定位中…";
+    navigator.geolocation.getCurrentPosition(function(p){
+      saveGeo({ lat: +p.coords.latitude.toFixed(4), lon: +p.coords.longitude.toFixed(4), name: "当前定位", idx: -1, ts: Date.now() });
+      toast("已按当前位置计算");
+      renderGear();
+    }, function(err){
+      b.textContent = "定位";
+      toast(err && err.code === 1 ? "定位被拒绝了，先用城市选择" : "定位失败，先用城市选择");
+    }, { timeout: 9000, maximumAge: 600000 });
+  };
+}
+
+/* ================= 状态 ================= */
+var S = {
+  role: "bride",
+  favs: new Set(),
+  gear: null,
+  custom: [],
+  photoMap: {},
+  viewer: null,
+  manage: false,
+  order: {},
+  hidden: {},
+  selectMode: false,
+  sel: new Set(),
+  selKey: "",
+  favFilter: "all"
+};
+var CAT_FIND = {};
+Object.keys(CATS).forEach(function(r){
+  CATS[r].forEach(function(c){ CAT_FIND[r+":"+c.id] = c; });
+});
+
+/* ================= 工具 ================= */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function xesc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+function pad(n){ return ("0"+n).slice(-2); }
+function uid(){ return "c:"+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function catOf(id){
+  if(id.indexOf("c:")===0){
+    var c = S.custom.find(function(x){ return x.id===id; });
+    if(c) return CAT_FIND[c.role+":"+c.catId]||CATS[c.role][0];
+    return CATS[S.role][0];
+  }
+  var p = id.split(":");
+  return CAT_FIND[p[0]+":"+p[1]] || (CATS[p[0]] && CATS[p[0]][0]) || CATS.bride[0];
+}
+function photoN(id){
+  if(id.indexOf("c:")===0){ return (S.custom.findIndex(function(x){return x.id===id;})+1); }
+  var p = id.split(":");
+  return parseInt(p[2],10);
+}
+function roleOf(id){
+  if(id.indexOf("c:")===0){
+    var c = S.custom.find(function(x){ return x.id===id; });
+    return c ? c.role : S.role;
+  }
+  return id.split(":")[0];
+}
+
+/* ================= 排版式占位图 ================= */
+var F_SERIF = "Source Han Serif SC,Noto Serif SC,Songti SC,STZhongsong,SimSun,serif";
+var F_SANS = "PingFang SC,Microsoft YaHei UI,Microsoft YaHei,Helvetica,Arial,sans-serif";
+var F_MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,monospace";
+var TONES = [
+  {bg:"#151412", fg:"#eae4d8", dim:"rgba(234,228,216,.56)", rule:"rgba(234,228,216,.2)", accent:"#d2593f"},
+  {bg:"#e5dfd2", fg:"#191612", dim:"rgba(25,22,18,.58)", rule:"rgba(25,22,18,.2)", accent:"#a63a28"},
+  {bg:"#211f1c", fg:"#ddd7ca", dim:"rgba(221,215,202,.55)", rule:"rgba(221,215,202,.17)", accent:"#d2593f"},
+  {bg:"#c9c1b1", fg:"#1b1814", dim:"rgba(27,24,20,.58)", rule:"rgba(27,24,20,.2)", accent:"#a63a28"}
+];
+var SCENE_TONES = [0,1,2,3];
+
+function svgData(s){
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s).replace(/'/g,"%27").replace(/"/g,"%22");
+}
+function sceneSVG(sc, i){
+  var t = TONES[SCENE_TONES[i] || 0];
+  var word = String(sc.en || "").toUpperCase();
+  var size = Math.max(64, Math.min(190, Math.floor(900 / Math.max(1, word.length * 0.7))));
+  var track = Math.round(size * 0.025);
+  var s = "<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800' viewBox='0 0 1200 800'>"
+    + "<rect width='1200' height='800' fill='"+t.bg+"'/>"
+    + "<rect x='28' y='28' width='1144' height='744' fill='none' stroke='"+t.rule+"' stroke-width='2'/>"
+    + "<text x='64' y='96' fill='"+t.dim+"' font-family='"+F_MONO+"' font-size='24' letter-spacing='6'>"+pad(i+1)+"</text>"
+    + "<text x='1136' y='96' text-anchor='end' fill='"+t.dim+"' font-family='"+F_MONO+"' font-size='19' letter-spacing='5'>POSE LIBRARY</text>"
+    + "<g fill='none' stroke='"+t.rule+"' stroke-width='2'>"
+    + "<circle cx='998' cy='252' r='96'/><circle cx='998' cy='252' r='58'/></g>"
+    + "<circle cx='998' cy='252' r='6' fill='"+t.accent+"'/>"
+    + "<text x='600' y='466' text-anchor='middle' fill='"+t.fg+"' font-family='"+F_SERIF+"' font-size='"+size+"' letter-spacing='"+track+"'>"+xesc(word)+"</text>"
+    + "<rect x='540' y='528' width='120' height='3' fill='"+t.accent+"'/>"
+    + "<text x='64' y='724' fill='"+t.dim+"' font-family='"+F_MONO+"' font-size='19' letter-spacing='5'>PHOTO POSE REFERENCE</text>"
+    + "<text x='1136' y='724' text-anchor='end' fill='"+t.dim+"' font-family='"+F_MONO+"' font-size='19' letter-spacing='4'>SERIES "+pad(i+1)+"</text>"
+    + "</svg>";
+  return svgData(s);
+}
+function catSVG(role, cat, i){
+  var t = TONES[i % 4];
+  var name = String(cat.name || "");
+  var size = Math.min(74, Math.floor(470 / Math.max(1, name.length)));
+  var s = "<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800' viewBox='0 0 600 800'>"
+    + "<rect width='600' height='800' fill='"+t.bg+"'/>"
+    + "<rect x='18' y='18' width='564' height='764' fill='none' stroke='"+t.rule+"' stroke-width='2'/>"
+    + "<text x='44' y='68' fill='"+t.dim+"' font-family='"+F_SANS+"' font-size='21' letter-spacing='2'>"+xesc(GROUP_NAME[role]||"")+"</text>"
+    + "<text x='556' y='68' text-anchor='end' fill='"+t.dim+"' font-family='"+F_MONO+"' font-size='17' letter-spacing='3'>NO. "+pad(i+1)+"</text>"
+    + "<text x='300' y='392' text-anchor='middle' fill='"+t.fg+"' font-family='"+F_SERIF+"' font-size='"+size+"'>"+xesc(name)+"</text>"
+    + "<rect x='268' y='436' width='64' height='3' fill='"+t.accent+"'/>"
+    + "<text x='44' y='742' fill='"+t.dim+"' font-family='"+F_MONO+"' font-size='17' letter-spacing='4'>POSE STUDY</text>"
+    + "<text x='556' y='742' text-anchor='end' fill='"+t.dim+"' font-family='"+F_MONO+"' font-size='17' letter-spacing='3'>REFERENCE</text>"
+    + "</svg>";
+  return svgData(s);
+}
+function phSVG(cat, n){
+  var t = TONES[(n % 4 === 0) ? 1 : (n % 2 ? 0 : 2)];
+  var num = pad(n);
+  var s = "<svg xmlns='http://www.w3.org/2000/svg' width='600' height='800' viewBox='0 0 600 800'>"
+    + "<rect width='600' height='800' fill='"+t.bg+"'/>"
+    + "<rect x='18' y='18' width='564' height='764' fill='none' stroke='"+t.rule+"' stroke-width='2'/>"
+    + "<text x='44' y='66' fill='"+t.dim+"' font-family='"+F_SANS+"' font-size='20' letter-spacing='2'>"+xesc(cat.name)+"</text>"
+    + "<text x='556' y='66' text-anchor='end' fill='"+t.dim+"' font-family='"+F_MONO+"' font-size='16' letter-spacing='4'>POSE</text>"
+    + "<text x='300' y='474' text-anchor='middle' fill='"+t.fg+"' font-family='"+F_SERIF+"' font-size='252' letter-spacing='6'>"+num+"</text>"
+    + "<rect x='268' y='524' width='64' height='3' fill='"+t.accent+"'/>"
+    + "<text x='44' y='742' fill='"+t.dim+"' font-family='"+F_SERIF+"' font-size='20' letter-spacing='3'>参考样片</text>"
+    + "<text x='556' y='742' text-anchor='end' fill='"+t.dim+"' font-family='"+F_MONO+"' font-size='16' letter-spacing='3'>NO. "+num+"</text>"
+    + "</svg>";
+  return svgData(s);
+}
+function photoPH(id){ return phSVG(catOf(id), photoN(id)); }
+
+function imgTag(src, ph, alt, attrs){
+  var html = "<img src=\""+ph+"\" alt=\""+xesc(alt)+"\" data-ph=\""+ph+"\" ";
+  if(src) html += "data-src=\""+src+"\" ";
+  html += (attrs||"") + " onerror=\"this.onerror=null;this.src=this.dataset.ph\">";
+  return html;
+}
+function hydrateImages(){
+  var root = $("view");
+  if(!root) return;
+  var imgs = root.querySelectorAll("img[data-src]");
+  Array.prototype.forEach.call(imgs, function(el){
+    var src = el.getAttribute("data-src");
+    if(!src) return;
+    var probe = new Image();
+    probe.onload = function(){ el.src = src; };
+    probe.onerror = function(){};
+    probe.src = src;
+  });
+}
+
+var REAL = {
+  "bride:chenpao":["photos/bride/chenpao/chenpao_xiaohongshu_850521075_fe7b4faf.webp","photos/bride/chenpao/chenpao_xiaohongshu_850522244_1785d6e2.webp","photos/bride/chenpao/chenpao_xiaohongshu_850523926_8fbddf78.webp","photos/bride/chenpao/chenpao_xiaohongshu_850523942_1d9e8647.webp","photos/bride/chenpao/chenpao_xiaohongshu_850524138_09716d19.webp","photos/bride/chenpao/chenpao_xiaohongshu_850524159_162361da.webp","photos/bride/chenpao/chenpao_xiaohongshu_850525704_d959d67b.webp","photos/bride/chenpao/chenpao_xiaohongshu_850525941_ea9a57dc.webp","photos/bride/chenpao/chenpao_xiaohongshu_850559823_7a84676b.webp","photos/bride/chenpao/chenpao_xiaohongshu_850559976_412c35ce.webp","photos/bride/chenpao/chenpao_xiaohongshu_850560427_a3391979.webp","photos/bride/chenpao/chenpao_xiaohongshu_850560865_8b154f21.webp","photos/bride/chenpao/chenpao_xiaohongshu_850560903_917d484f.webp","photos/bride/chenpao/chenpao_xiaohongshu_850598336_d3d6f7ec.webp","photos/bride/chenpao/chenpao_xiaohongshu_850598630_9c886120.webp","photos/bride/chenpao/chumen_xiaohongshu_851209838_bad28444.webp","photos/bride/chenpao/chenpao_xiaohongshu_854953631_6706c2c4.webp"],
+  "bride:chumen":["photos/bride/chumen/chumen_xiaohongshu_851200704_6f24ea12.webp","photos/bride/chumen/chumen_xiaohongshu_851201494_a85c8b8d.webp","photos/bride/chumen/chumen_xiaohongshu_851201724_8ff2d2b3.webp","photos/bride/chumen/chumen_xiaohongshu_851202213_a388ab46.webp","photos/bride/chumen/chumen_xiaohongshu_851203392_acb77c09.webp","photos/bride/chumen/chumen_xiaohongshu_851203961_ccd8ccd1.webp","photos/bride/chumen/chumen_xiaohongshu_851204230_e8728475.webp","photos/bride/chumen/chumen_xiaohongshu_851206023_96fd34a8.webp","photos/bride/chumen/chumen_xiaohongshu_851206033_e9f21457.webp","photos/bride/chumen/chumen_xiaohongshu_851208033_eb10193a.webp","photos/bride/chumen/chumen_xiaohongshu_851211444_214bc776.webp","photos/bride/chumen/chumen_xiaohongshu_851211847_f51c5ade.webp","photos/bride/chumen/chumen_xiaohongshu_851212183_65a0d506.webp","photos/bride/chumen/chumen_xiaohongshu_851213001_3d9c306b.webp","photos/bride/chumen/chumen_xiaohongshu_851256939_a75d5a61.webp"],
+  "bride:dinghun":["photos/bride/dinghun/dinghun_xiaohongshu_850245469_f2697255.webp","photos/bride/dinghun/dinghun_xiaohongshu_850245671_ad9b281f.webp","photos/bride/dinghun/dinghun_xiaohongshu_850245936_f173e5c9.webp","photos/bride/dinghun/dinghun_xiaohongshu_850247836_8bba266e.webp","photos/bride/dinghun/dinghun_xiaohongshu_850248765_f876faf6.webp","photos/bride/dinghun/dinghun_xiaohongshu_850250160_3ac68ac9.webp","photos/bride/dinghun/dinghun_xiaohongshu_850251247_0d162ec4.webp","photos/bride/dinghun/dinghun_xiaohongshu_850255482_5e38b618.webp","photos/bride/dinghun/dinghun_xiaohongshu_850286364_256edb11.webp"],
+  "bride:firstlook":["photos/bride/firstlook/firstlook_xiaohongshu_852002589_d037b899.webp","photos/bride/firstlook/firstlook_xiaohongshu_852003135_c040c714.webp","photos/bride/firstlook/firstlook_xiaohongshu_852003211_299a6ec7.webp","photos/bride/firstlook/firstlook_xiaohongshu_852003625_92b7768f.webp","photos/bride/firstlook/firstlook_xiaohongshu_852004182_ab0d7d71.webp","photos/bride/firstlook/firstlook_xiaohongshu_852005593_f70423fb.webp","photos/bride/firstlook/firstlook_xiaohongshu_852006756_132fc662.webp","photos/bride/firstlook/firstlook_xiaohongshu_852007033_7c9a2b82.webp","photos/bride/firstlook/firstlook_xiaohongshu_852008804_282689a8.webp","photos/bride/firstlook/firstlook_xiaohongshu_852011560_e122848b.webp","photos/bride/firstlook/firstlook_xiaohongshu_852037519_f3923753.webp","photos/bride/firstlook/firstlook_xiaohongshu_852037735_32226cec.webp","photos/bride/firstlook/firstlook_xiaohongshu_852086178_7a9e9709.webp"],
+  "bride:fumu":["photos/bride/fumu/fumu_xiaohongshu_850975282_e57bb8fa.webp","photos/bride/fumu/fumu_xiaohongshu_850975307_c8c72572.webp","photos/bride/fumu/fumu_xiaohongshu_850975310_1bc690d9.webp","photos/bride/fumu/fumu_xiaohongshu_850975581_3ee7ccfe.webp","photos/bride/fumu/fumu_xiaohongshu_850975832_2d0619ed.webp","photos/bride/fumu/fumu_xiaohongshu_850975858_63ebdb50.webp","photos/bride/fumu/fumu_xiaohongshu_850975875_aea7f746.webp","photos/bride/fumu/fumu_xiaohongshu_850975963_1a8c9f9b.webp","photos/bride/fumu/fumu_xiaohongshu_850976056_27e81ff6.webp","photos/bride/fumu/fumu_xiaohongshu_850976953_4d67cabc.webp","photos/bride/fumu/fumu_xiaohongshu_850977018_205fb619.webp","photos/bride/fumu/fumu_xiaohongshu_850977151_1d56b177.webp","photos/bride/fumu/fumu_xiaohongshu_850979706_c23a83ad.webp","photos/bride/fumu/fumu_xiaohongshu_850980912_d21437a7.webp","photos/bride/fumu/fumu_xiaohongshu_851014665_14634c13.webp","photos/bride/fumu/fumu_xiaohongshu_851014702_3bd10180.webp","photos/bride/fumu/fumu_xiaohongshu_851014953_66a527c5.webp","photos/bride/fumu/fumu_xiaohongshu_851015041_7e578139.webp","photos/bride/fumu/fumu_xiaohongshu_851015047_0323a45a.webp","photos/bride/fumu/fumu_xiaohongshu_851015107_f398b1c8.webp","photos/bride/fumu/fumu_xiaohongshu_851015166_f2e62936.webp","photos/bride/fumu/fumu_xiaohongshu_851015191_3a4e8f6a.webp","photos/bride/fumu/fumu_xiaohongshu_851015226_6917dc77.webp","photos/bride/fumu/fumu_xiaohongshu_851015252_eff81ceb.webp","photos/bride/fumu/fumu_xiaohongshu_851015404_dd3c2f48.webp","photos/bride/fumu/fumu_xiaohongshu_851015793_e16732d0.webp","photos/bride/fumu/fumu_xiaohongshu_851016452_e5409249.webp","photos/bride/fumu/fumu_xiaohongshu_851016575_85d80c2e.webp","photos/bride/fumu/fumu_xiaohongshu_851016623_e2d8a74a.webp","photos/bride/fumu/fumu_xiaohongshu_851017447_ceaefc9f.webp","photos/bride/fumu/fumu_xiaohongshu_851017458_7e9f21bb.webp","photos/bride/fumu/fumu_xiaohongshu_851017520_2fdba29f.webp"],
+  "bride:huazhuang":["photos/bride/huazhuang/huazhuang_xiaohongshu_852284842_0cc70a4b.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852288287_47ccdaf9.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852288649_82cc711f.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852289240_bba65ccc.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852289422_a4f3b19f.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852289447_1912426b.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852291350_78a14a31.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852293552_2ea9fc24.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852294051_a7a29d90.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852294478_88f9e855.webp","photos/bride/huazhuang/huazhuang_xiaohongshu_852343134_2cece123.webp"],
+  "bride:jieqin":["photos/bride/jieqin/chenpao_xiaohongshu_850520078_f016cb93.webp","photos/bride/jieqin/chenpao_xiaohongshu_850521085_0471528f.webp","photos/bride/jieqin/chenpao_xiaohongshu_850522833_bf29f1d2.webp","photos/bride/jieqin/chenpao_xiaohongshu_850522858_29718112.webp","photos/bride/jieqin/xiuhe_xiaohongshu_850869398_209ba22a.webp","photos/bride/jieqin/jieqin_xiaohongshu_851134295_1698be37.webp","photos/bride/jieqin/jieqin_xiaohongshu_851134316_a7000604.webp","photos/bride/jieqin/jieqin_xiaohongshu_851134678_80205c85.webp"],
+  "bride:jingjiu":["photos/bride/jingjiu/jingjiu_xiaohongshu_851897645_2b8880f0.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851898032_61d13587.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851898070_9a1c86fb.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851900442_c627366c.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851901404_0769df43.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851901638_19a9bd8d.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851901817_f4b39031.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851902360_d8f90434.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851902395_54b753c1.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851902412_c3b9bd30.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851933278_431f4589.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851934166_85bdd9d7.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851934226_2dc203db.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851934727_73053893.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851935325_d08a0aca.webp","photos/bride/jingjiu/jingjiu_xiaohongshu_851936401_b8a09006.webp"],
+  "bride:lingzheng":["photos/bride/lingzheng/lingzheng_xiaohongshu_850382804_e3a6f880.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850382948_bf1b3d5f.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850383008_e4235f3c.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850384732_58a8df35.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850384741_dcaf20b0.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850384848_296c49c6.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850384877_baf5cfc5.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850384978_ecca09a5.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850385013_6780bddb.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850385177_236f67f4.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850385914_72680e2e.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850386492_0f94172a.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850387828_7e5b6c10.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850387836_258e426e.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850390321_56afaa5e.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850390436_408d664a.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850391038_e1ed2db5.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850391075_b7b24d15.webp","photos/bride/lingzheng/lingzheng_xiaohongshu_850430705_bbf4cfe7.webp"],
+  "bride:qunxiang":["photos/bride/qunxiang/qunxiang_xiaohongshu_851728986_3abc1a77.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851729279_36d89b0e.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851729817_4cfa1e57.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851729834_3601be26.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851729894_c2838172.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851730141_d09f90ad.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851730337_1883cd7c.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851730383_0f7c5f48.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851730400_4fa06438.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851730462_8f0e83a3.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851730699_02ba1565.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851730748_5842543c.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851730816_f4abe6e0.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851730895_98cf45d6.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851731076_003fb502.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851731578_3614ee3d.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851732349_cf07a8ae.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851732372_e92ffa34.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851732463_2be008d1.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851732503_a0ccfd97.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851732579_48c29e8b.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851732644_013f2427.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851733818_03d712a6.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851734023_e3f3ee48.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851734143_4da2e0bc.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851734254_0aa548b8.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851734331_6579fdc2.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851734973_e78251a5.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851734977_fdc18e01.webp","photos/bride/qunxiang/qunxiang_xiaohongshu_851736082_09346fd3.webp"],
+  "bride:xiuhe":["photos/bride/xiuhe/xiuhe_xiaohongshu_850790222_8dd12f84.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850790255_def08941.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850790440_4dd31f57.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850790589_870e9c92.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850790633_46314ec2.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850790677_e11388d6.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850790725_b07cb958.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850790888_c2beb46d.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850791116_a39e5edb.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850791710_6d1e65a2.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850791770_0087f398.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850791797_1df5bc97.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850791890_21c9d1d9.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850859618_60fbf710.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850859822_9974b239.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850860372_05304e52.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850860947_f86c392b.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850864068_dd87a8b6.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850864147_837491e2.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850864182_8cf9073c.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850864202_15403a1b.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850864512_96e6c49b.webp","photos/bride/xiuhe/xiuhe_xiaohongshu_850869779_ac57063d.webp"],
+  "bride:yishi":["photos/bride/yishi/yishi_xiaohongshu_851478877_ecbc0734.webp","photos/bride/yishi/yishi_xiaohongshu_851478905_de4c9529.webp","photos/bride/yishi/yishi_xiaohongshu_851478908_52ec7519.webp","photos/bride/yishi/yishi_xiaohongshu_851478916_3c94787a.webp","photos/bride/yishi/yishi_xiaohongshu_851478983_5d87f0a7.webp","photos/bride/yishi/yishi_xiaohongshu_851479260_392cc5e3.webp","photos/bride/yishi/yishi_xiaohongshu_851479468_9e17e7de.webp","photos/bride/yishi/yishi_xiaohongshu_851479743_b678631b.webp","photos/bride/yishi/yishi_xiaohongshu_851479797_d98ddb99.webp","photos/bride/yishi/yishi_xiaohongshu_851480473_d6704cc8.webp","photos/bride/yishi/yishi_xiaohongshu_851480701_885b83aa.webp","photos/bride/yishi/yishi_xiaohongshu_851480917_60cd28b5.webp","photos/bride/yishi/yishi_xiaohongshu_851481007_62145802.webp","photos/bride/yishi/yishi_xiaohongshu_851481331_6f7ad3a4.webp","photos/bride/yishi/yishi_xiaohongshu_851481348_8b3dcff2.webp","photos/bride/yishi/yishi_xiaohongshu_851481369_663534fc.webp","photos/bride/yishi/yishi_xiaohongshu_851481447_5f68a42d.webp","photos/bride/yishi/yishi_xiaohongshu_851481785_5b30e7fa.webp","photos/bride/yishi/yishi_xiaohongshu_851481789_6df1c263.webp","photos/bride/yishi/yishi_xiaohongshu_851481793_3ba239a7.webp","photos/bride/yishi/yishi_xiaohongshu_851482446_ba8e1030.webp","photos/bride/yishi/yishi_xiaohongshu_851482519_2df7c90e.webp","photos/bride/yishi/yishi_xiaohongshu_851483157_62b644f9.webp","photos/bride/yishi/yishi_xiaohongshu_851483641_6143fddf.webp","photos/bride/yishi/yishi_xiaohongshu_851483654_96542a17.webp","photos/bride/yishi/yishi_xiaohongshu_851484102_4718b310.webp","photos/bride/yishi/yishi_xiaohongshu_851484700_3a0c8a5e.webp","photos/bride/yishi/yishi_xiaohongshu_851485526_885497df.webp","photos/bride/yishi/yishi_xiaohongshu_851485682_1ccbf2da.webp","photos/bride/yishi/yishi_xiaohongshu_851485692_e96d1094.webp","photos/bride/yishi/yishi_xiaohongshu_851486550_49376060.webp"],
+  "bride:yishizhua":[],
+  "groom:qunxiang":["photos/groom/qunxiang/01.jpg","photos/groom/qunxiang/02.jpg","photos/groom/qunxiang/03.jpg","photos/groom/qunxiang/04.jpg"],
+  "groom:zhunbei":["photos/groom/zhunbei/01.jpg","photos/groom/zhunbei/02.jpg","photos/groom/zhunbei/03.jpg","photos/groom/zhunbei/04.jpg"]
+};
+var COVER_SMALL = {
+  "bride:dinghun":"img/_cover/b_ding.jpg",
+  "bride:lingzheng":"img/_cover/b_lic.jpg",
+  "bride:chenpao":"img/_cover/b_robe.jpg",
+  "bride:xiuhe":"img/_cover/b_china.jpg",
+  "bride:fumu":"img/_cover/b_fam.jpg",
+  "bride:jieqin":"img/_cover/b_fetch.jpg",
+  "bride:chumen":"img/_cover/b_out.jpg",
+  "bride:yishi":"img/_cover/b_cere.jpg",
+  "bride:yishizhua":"img/_cover/b_snap.jpg",
+  "bride:qunxiang":"img/_cover/b_group.jpg",
+  "bride:jingjiu":"img/_cover/b_toast.jpg",
+  "bride:firstlook":"img/_cover/b_first.jpg",
+  "bride:huazhuang":"img/_cover/b_make.jpg",
+  "groom:zhunbei":"img/_cover/g_suit.jpg",
+  "groom:qunxiang":"img/_cover/g_fam.jpg"
+};
+function catCover(role, catId){
+  var key = role + ":" + catId;
+  if(COVER_SMALL[key]) return realPath(COVER_SMALL[key]);
+  return realCover(role, catId);
+}
+var REAL_V = 0;
+function realPath(u){ return u + (REAL_V ? ("?v=" + REAL_V) : ""); }
+function realSrc(photoId){
+  if(S.photoMap[photoId]) return S.photoMap[photoId];
+  if(photoId.indexOf("c:")===0) return "";
+  var p = photoId.split(":");
+  var list = REAL[p[0]+":"+p[1]];
+  var n = parseInt(p[2],10);
+  return (list && list[n-1]) ? realPath(list[n-1]) : "";
+}
+function realCover(role, catId){
+  var l = REAL[role+":"+catId];
+  return (l && l.length) ? realPath(l[0]) : "";
+}
+function syncPhotos(done){
+  if(location.protocol === "file:") return;
+  fetch("list.json", {cache:"no-store"}).then(function(r){
+    return r.ok ? r.json() : null;
+  }).then(function(d){
+    if(!d || !d.list) return;
+    var changed = (REAL_V !== (+d.v || 0));
+    Object.keys(REAL).forEach(function(k){ if(!d.list[k]){ delete REAL[k]; changed = true; } });
+    Object.keys(d.list).forEach(function(k){
+      var nv = d.list[k], ov = REAL[k];
+      if(!ov || ov.length !== nv.length || ov[ov.length-1] !== nv[nv.length-1]){ REAL[k] = nv; changed = true; }
+    });
+    REAL_V = +d.v || 0;
+    if(changed && done) done();
+  }).catch(function(){});
+}
+function phURL(photoId){
+  var real = realSrc(photoId);
+  if(real) return real;
+  return photoPH(photoId);
+}
+function catKey(role, catId){ return role + ":" + catId; }
+function photoList(role, cat){
+  var key = catKey(role, cat.id);
+  var base = [];
+  var n = Math.max(cat.n, (REAL[key] || []).length);
+  for(var i=1;i<=n;i++){ base.push(role+":"+cat.id+":"+i); }
+  S.custom.forEach(function(c){
+    if(c.role===role && c.catId===cat.id) base.push(c.id);
+  });
+  var hidden = S.hidden[key] || [];
+  base = base.filter(function(id){ return hidden.indexOf(id) < 0; });
+  var ord = S.order[key];
+  if(ord && ord.length){
+    var pos = {};
+    ord.forEach(function(id, i){ if(!pos.hasOwnProperty(id)) pos[id] = i; });
+    base.sort(function(a, b){
+      var pa = pos.hasOwnProperty(a) ? pos[a] : 1e9;
+      var pb = pos.hasOwnProperty(b) ? pos[b] : 1e9;
+      return pa - pb;
+    });
+  }
+  return base;
+}
+function isFav(id){ return S.favs.has(id); }
+function toast(msg){
+  var t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._tm);
+  t._tm = setTimeout(function(){ t.classList.remove("show"); }, 1800);
+}
+
+/* ================= 通用确认 / 输入 / 撤销 ================= */
+var _confirmReturn = null, _confirmOk = null;
+function openConfirm(title, msg, okText, onOk){
+  var m = $("confirmMask");
+  if(!m){ if(onOk) onOk(); return; }
+  $("confirmTitle").textContent = title;
+  $("confirmMsg").textContent = msg;
+  $("confirmYes").textContent = okText || "确定";
+  _confirmOk = onOk || null;
+  _confirmReturn = document.activeElement;
+  m.classList.add("show");
+  setTimeout(function(){ try{ $("confirmNo").focus({preventScroll:true}); }catch(e){ $("confirmNo").focus(); } }, 0);
+}
+function closeConfirm(ok){
+  var m = $("confirmMask");
+  if(!m || !m.classList.contains("show")) return;
+  m.classList.remove("show");
+  var fn = _confirmOk, r = _confirmReturn;
+  _confirmOk = null; _confirmReturn = null;
+  if(ok && fn) fn();
+  if(r && r.focus){ try{ r.focus({preventScroll:true}); }catch(e){ r.focus(); } }
+}
+var _promptReturn = null, _promptOk = null;
+function openPrompt(title, label, okText, onOk){
+  var m = $("promptMask");
+  if(!m) return;
+  $("promptTitle").textContent = title;
+  var lb = m.querySelector(".field-label");
+  if(lb) lb.textContent = label;
+  $("promptInput").value = "";
+  $("promptErr").classList.remove("show");
+  $("promptYes").textContent = okText || "确定";
+  _promptOk = onOk || null;
+  _promptReturn = document.activeElement;
+  m.classList.add("show");
+  setTimeout(function(){ try{ $("promptInput").focus({preventScroll:true}); }catch(e){ $("promptInput").focus(); } }, 0);
+}
+function submitPrompt(){
+  var v = ($("promptInput").value || "").trim();
+  if(!v){ $("promptErr").classList.add("show"); $("promptInput").focus(); return; }
+  var fn = _promptOk, r = _promptReturn;
+  _promptOk = null; _promptReturn = null;
+  $("promptMask").classList.remove("show");
+  if(fn) fn(v);
+  if(r && r.focus){ try{ r.focus({preventScroll:true}); }catch(e){ r.focus(); } }
+}
+function closePrompt(){
+  var m = $("promptMask");
+  if(!m || !m.classList.contains("show")) return;
+  m.classList.remove("show");
+  var r = _promptReturn;
+  _promptOk = null; _promptReturn = null;
+  if(r && r.focus){ try{ r.focus({preventScroll:true}); }catch(e){ r.focus(); } }
+}
+var _undoFn = null, _undoExpire = null, _undoTimer = null;
+function showUndo(text, undoFn, expireFn){
+  var bar = $("undoBar");
+  if(!bar){ if(expireFn) expireFn(); return; }
+  if(_undoTimer) clearTimeout(_undoTimer);
+  if(_undoExpire){ var ex = _undoExpire; _undoExpire = null; try{ ex(); }catch(e){} }
+  _undoFn = undoFn || null;
+  _undoExpire = expireFn || null;
+  $("undoTxt").textContent = text;
+  bar.classList.add("show");
+  _undoTimer = setTimeout(function(){
+    var exp = _undoExpire;
+    _undoFn = null; _undoExpire = null; _undoTimer = null;
+    if(exp){ try{ exp(); }catch(e){} }
+    bar.classList.remove("show");
+  }, 6000);
+}
+function hideUndo(){
+  if(_undoTimer) clearTimeout(_undoTimer);
+  _undoFn = null; _undoExpire = null; _undoTimer = null;
+  var bar = $("undoBar");
+  if(bar) bar.classList.remove("show");
+}
+function doUndo(){
+  var fn = _undoFn;
+  if(!fn) return;
+  if(_undoTimer) clearTimeout(_undoTimer);
+  _undoFn = null; _undoExpire = null; _undoTimer = null;
+  $("undoBar").classList.remove("show");
+  fn();
+}
+
+/* ================= IndexedDB ================= */
+function idbOpen(){
+  return new Promise(function(res, rej){
+    var r = indexedDB.open("wpl", 1);
+    r.onupgradeneeded = function(e){
+      var db = e.target.result;
+      if(!db.objectStoreNames.contains("photos")) db.createObjectStore("photos");
+    };
+    r.onsuccess = function(e){ res(e.target.result); };
+    r.onerror = function(){ rej(r.error); };
+  });
+}
+function idbPut(key, blob){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var tx = db.transaction("photos","readwrite");
+      tx.objectStore("photos").put(blob, key);
+      tx.oncomplete = res;
+      tx.onerror = function(){ rej(tx.error); };
+    });
+  });
+}
+function idbGet(key){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var rq = db.transaction("photos").objectStore("photos").get(key);
+      rq.onsuccess = function(){ res(rq.result); };
+      rq.onerror = function(){ rej(rq.error); };
+    });
+  });
+}
+function idbDel(key){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var tx = db.transaction("photos","readwrite");
+      tx.objectStore("photos").delete(key);
+      tx.oncomplete = res;
+      tx.onerror = function(){ rej(tx.error); };
+    });
+  });
+}
+
+/* ================= 存储 ================= */
+function saveFavs(){
+  try{ localStorage.setItem("wpl_favs", JSON.stringify(Array.from(S.favs))); }catch(e){}
+}
+function saveGear(){
+  try{ localStorage.setItem("wpl_gear", JSON.stringify(S.gear)); }catch(e){}
+}
+function saveCustomMeta(){
+  idbPut("custom-meta", new Blob([JSON.stringify(S.custom)], {type:"application/json"}));
+}
+function saveOrder(){
+  try{ localStorage.setItem("wpl_order", JSON.stringify(S.order)); }catch(e){}
+}
+function saveHidden(){
+  try{ localStorage.setItem("wpl_hidden", JSON.stringify(S.hidden)); }catch(e){}
+}
+function loadPersist(){
+  try{
+    var f = JSON.parse(localStorage.getItem("wpl_favs")||"[]");
+    S.favs = new Set(f);
+    var g = JSON.parse(localStorage.getItem("wpl_gear")||"null");
+    S.gear = g ? g : JSON.parse(JSON.stringify(DEFAULT_GEAR));
+    var o = JSON.parse(localStorage.getItem("wpl_order")||"{}");
+    if(o && typeof o === "object" && !Array.isArray(o)) S.order = o;
+    var hd = JSON.parse(localStorage.getItem("wpl_hidden")||"{}");
+    if(hd && typeof hd === "object" && !Array.isArray(hd)) S.hidden = hd;
+  }catch(e){ S.gear = JSON.parse(JSON.stringify(DEFAULT_GEAR)); }
+  return idbGet("custom-meta").then(function(blob){
+    if(blob){ return blob.text().then(function(t){
+      try{ S.custom = JSON.parse(t)||[]; }catch(e){ S.custom = []; }
+    }); }
+  }).catch(function(){ S.custom = []; }).then(function(){
+    var jobs = [];
+    S.custom.forEach(function(c){ jobs.push(idbGet(c.id).then(function(b){
+      if(b) S.photoMap[c.id] = URL.createObjectURL(b);
+    })); });
+    return Promise.all(jobs);
+  });
+}
+
+function setPhotoFile(photoId, file){
+  return idbPut(photoId, file).then(function(){
+    if(S.photoMap[photoId]) URL.revokeObjectURL(S.photoMap[photoId]);
+    S.photoMap[photoId] = URL.createObjectURL(file);
+  });
+}
+
+/* ================= 路由 ================= */
+var ROUTES = ["home","scene","cat","fav","gear","mine","search"];
+function sceneOfGroup(g){
+  for(var i=0;i<SCENES.length;i++){ if(SCENES[i].groups.indexOf(g) >= 0) return SCENES[i].id; }
+  return "wedding";
+}
+function route(){
+  var h = location.hash.replace(/^#\/?/,"");
+  var parts = h.split("/");
+  var name = parts[0]||"home";
+  if(name==="cat" && parts[1] && parts[2] && CAT_FIND[parts[1]+":"+parts[2]]){
+    return {v:"cat", role:parts[1], catId:parts[2]};
+  }
+  if(name==="scene"){
+    if(parts[1] && SCENE_FIND[parts[1]]) return {v:"scene", scene:parts[1]};
+    return {v:"home"};
+  }
+  if(ROUTES.indexOf(name)<0) name = "home";
+  return {v:name};
+}
+function go(h){ location.hash = h; }
+function goRoute(v){
+  if(v.v==="cat"){ location.hash = "#/cat/"+v.role+"/"+v.catId; }
+  else{ location.hash = "#/"+v.v; }
+}
+var SCROLL_MEM = {}, _curKey = null;
+function routeKey(v){
+  if(v.v==="cat") return "cat:"+v.role+":"+v.catId;
+  if(v.v==="scene") return "scene:"+v.scene;
+  return v.v;
+}
+
+/* ================= 图标集 ================= */
+function icons(){
+  return {
+    grid: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6'><rect x='4' y='4' width='7' height='7' rx='1'/><rect x='13' y='4' width='7' height='7' rx='1'/><rect x='4' y='13' width='7' height='7' rx='1'/><rect x='13' y='13' width='7' height='7' rx='1'/></svg>",
+    heart: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linejoin='round'><path d='M12 20.5s-7.5-4.6-9.3-9A5.4 5.4 0 0 1 12 6.6a5.4 5.4 0 0 1 9.3 4.9c-1.8 4.4-9.3 9-9.3 9z'/></svg>",
+    heartF: "<svg viewBox='0 0 24 24' fill='currentColor' stroke='none'><path d='M12 20.5s-7.5-4.6-9.3-9A5.4 5.4 0 0 1 12 6.6a5.4 5.4 0 0 1 9.3 4.9c-1.8 4.4-9.3 9-9.3 9z'/></svg>",
+    bag: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round'><path d='M4 8h16v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8z'/><path d='M9 8V6a3 3 0 0 1 6 0v2'/><path d='M4 13h16'/></svg>",
+    user: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round'><circle cx='12' cy='8' r='4'/><path d='M4.5 20a7.5 7.5 0 0 1 15 0'/></svg>",
+    back: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M15 18l-6-6 6-6'/></svg>",
+    close: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>",
+    check: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'><path d='M5 13l4 4L19 7'/></svg>",
+    plus: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'><path d='M12 5v14M5 12h14'/></svg>",
+    trash: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round'><path d='M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13h10l1-13'/><path d='M10 11v6M14 11v6'/></svg>",
+    cam: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round'><rect x='3' y='7' width='18' height='13' rx='2.5'/><path d='M8 7l1.5-2.5h5L16 7'/><circle cx='12' cy='13.5' r='3.5'/></svg>",
+    info: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round'><circle cx='12' cy='12' r='9'/><path d='M12 11v5'/><path d='M12 8h.01'/></svg>",
+    doc: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3h9l4 4v14H6z'/><path d='M15 3v4h4'/><path d='M9 12h7M9 16h7'/></svg>",
+    phone: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round'><rect x='7' y='2.5' width='10' height='19' rx='2.5'/><path d='M11 18.5h2'/></svg>",
+    save: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M5 4h11l3 3v13H5z'/><path d='M8 4v5h8V4M8 20v-6h8v6'/></svg>",
+    load: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3v12'/><path d='M7 10l5 5 5-5'/><path d='M4 21h16'/></svg>",
+    sun: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.7' stroke-linecap='round'><circle cx='12' cy='12' r='4.2' fill='currentColor' stroke='none'/><path d='M12 2.6v2.1M12 19.3v2.1M2.6 12h2.1M19.3 12h2.1M5.4 5.4l1.5 1.5M17.1 17.1l1.5 1.5M18.6 5.4l-1.5 1.5M6.9 17.1l-1.5 1.5'/></svg>",
+    moon: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.7' stroke-linejoin='round'><path d='M20.6 14.6A8.6 8.6 0 0 1 9.4 3.4a8.6 8.6 0 1 0 11.2 11.2z'/></svg>",
+    search: "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'><circle cx='11' cy='11' r='6.4'/><path d='M15.8 15.8l4.4 4.4'/></svg>",
+    grip: "<svg viewBox='0 0 24 24' fill='currentColor' stroke='none'><circle cx='9' cy='6' r='1.7'/><circle cx='15' cy='6' r='1.7'/><circle cx='9' cy='12' r='1.7'/><circle cx='15' cy='12' r='1.7'/><circle cx='9' cy='18' r='1.7'/><circle cx='15' cy='18' r='1.7'/></svg>"
+  };
+}
+
+function tbActions(ic, withSearch){
+  var t = themeOf();
+  return "<div class='tb-actions'>"
+    + "<button class='tb-icon"+(t==="light"?"":" sun")+"' id='themeBtn' aria-label='切换深浅底色'>"+(t==="light"?ic.moon:ic.sun)+"</button>"
+    + (withSearch === false ? "" : "<button class='tb-icon' id='searchBtn' aria-label='搜索'>"+ic.search+"</button>")
+    + "</div>";
+}
+function bindTbActions(){
+  if($("themeBtn")) $("themeBtn").onclick = function(){ setTheme(themeOf()==="light" ? "dark" : "light"); };
+  if($("searchBtn")) $("searchBtn").onclick = function(){ go("#/search"); };
+}
+
+function renderTopbar(v){
+  var tb = $("topbar"), ic = icons(), html = "";
+  if(v.v==="cat"){
+    var cat = CAT_FIND[v.role+":"+v.catId];
+    var sid = sceneOfGroup(v.role);
+    html = "<button class='tb-back' onclick=\"go('#/scene/"+sid+"')\" aria-label='返回场景'>"+ic.back+"</button>"
+      + "<div class='tb-title'>"+(cat?esc(cat.name):"环节")+"</div>";
+  }else if(v.v==="scene"){
+    var sc = SCENE_FIND[v.scene];
+    html = "<button class='tb-back' onclick=\"go('#/home')\" aria-label='返回主页'>"+ic.back+"</button>"
+      + "<div class='tb-title'>"+(sc?esc(sc.name):"场景")+"</div>" + tbActions(ic);
+  }else if(v.v==="home"){
+    html = "<div class='tb-brand'><b>拍照姿势参考库</b><span class='pill'>LOCAL</span></div>" + tbActions(ic);
+  }else if(v.v==="search"){
+    html = "<button class='tb-back' onclick=\"go('#/home')\" aria-label='返回主页'>"+ic.back+"</button>"
+      + "<div class='tb-title'>搜索姿势</div>" + tbActions(ic, false);
+  }else if(v.v==="fav"){
+    html = "<button class='tb-back' onclick=\"go('#/home')\" aria-label='返回主页'>"+ic.back+"</button><div class='tb-title'>我的收藏</div>";
+  }else if(v.v==="gear"){
+    html = "<button class='tb-back' onclick=\"go('#/home')\" aria-label='返回主页'>"+ic.back+"</button><div class='tb-title'>必带设备</div>";
+  }else{
+    html = "<button class='tb-back' onclick=\"go('#/home')\" aria-label='返回主页'>"+ic.back+"</button><div class='tb-title'>我的</div>";
+  }
+  tb.innerHTML = html;
+  bindTbActions();
+}
+
+function renderTabbar(v){
+  var tb = $("tabbar"), ic = icons();
+  var items = [
+    {k:"home", t:"主页", i:ic.grid},
+    {k:"fav", t:"收藏", i:ic.heart},
+    {k:"gear", t:"设备", i:ic.bag},
+    {k:"mine", t:"我的", i:ic.user}
+  ];
+  tb.innerHTML = items.map(function(it){
+    var on = (v.v===it.k || ((v.v==="cat"||v.v==="scene") && it.k==="home")) ? " on" : "";
+    return "<button class='tab"+on+"'"+(on?" aria-current='page'":"")+" onclick=\"go('#/"+it.k+"')\">"+it.i+"<span>"+it.t+"</span></button>";
+  }).join("");
+}
+
+function groupCount(g){
+  var n = 0;
+  CATS[g].forEach(function(c){ n += photoList(g, c).length; });
+  return n;
+}
+function sceneCount(sc){
+  var n = 0;
+  sc.groups.forEach(function(g){ n += groupCount(g); });
+  return n;
+}
+function sceneCoverInfo(sc, i){
+  return {src: sc.cover || sc.defaultImg || "", ph: sceneSVG(sc, i)};
+}
+function catCoverInfo(role, cat, i){
+  return {src: catCover(role, cat.id), ph: catSVG(role, cat, i)};
+}
+
+/* ================= 1. 主页 ================= */
+function renderHome(){
+  var total = 0;
+  SCENES.forEach(function(sc){ total += sceneCount(sc); });
+  var html = "<div class='page'>"
+    + "<section class='hero'><p class='kicker'>POSE REFERENCE / 2026</p>"
+    + "<h1>按场景，<br>找到下一个姿势。</h1>"
+    + "<p class='hero-sub'>婚礼、陪拍、棚拍与角色创作，"+SCENES.length+" 组场景共 "+total+" 张姿势样片。</p></section>"
+    + "<div class='scene-list'>";
+  SCENES.forEach(function(sc, i){
+    var c = sceneCoverInfo(sc, i);
+    html += "<article class='scene'>"
+      + "<a class='scene-media' href='#/scene/"+sc.id+"'>"
+      + imgTag(c.src, c.ph, sc.name+" 场景封面", "loading='lazy' decoding='async'")
+      + "</a>"
+      + "<div class='scene-cap'>"
+      + "<div class='scene-line'><span class='scene-no'>"+pad(i+1)+"</span><h2>"+esc(sc.name)+"</h2><span class='scene-count'>"+sceneCount(sc)+" 张</span></div>"
+      + "<p class='scene-tag'>"+esc(sc.tag||"")+"</p>"
+      + "<p class='scene-desc'>"+esc(sc.desc)+"</p>"
+      + "</div></article>";
+  });
+  html += "</div>"
+    + "<footer class='legal-foot'><button type='button' id='legalFootBtn' aria-haspopup='dialog'>内容版权归原作者所有 · 版权与免责声明</button></footer>"
+    + "</div>";
+  $("view").innerHTML = html;
+  hydrateImages();
+  if($("legalFootBtn")) $("legalFootBtn").onclick = function(){ openLegal(this); };
+}
+
+/* ================= 2. 场景页 ================= */
+function renderScene(v){
+  var sc = SCENE_FIND[v.scene];
+  if(!sc){ go("#/home"); return; }
+  if(sc.groups.indexOf(S.role) < 0) S.role = sc.groups[0];
+  var idx = SCENES.indexOf(sc);
+  var html = "<div class='page'>"
+    + "<header class='page-head'><p class='kicker'>SCENE "+pad(idx+1)+" / "+esc(sc.en)+"</p>"
+    + "<h2>"+esc(sc.name)+"</h2>"
+    + "<p class='lede'>"+esc(sc.desc)+"　共 "+sceneCount(sc)+" 张姿势参考</p></header>";
+
+  if(sc.groups.length > 1){
+    html += "<div class='segmented' role='group' aria-label='选择角色'>";
+    sc.groups.forEach(function(g){
+      var on = S.role===g;
+      html += "<button class='"+(on?"on":"")+"' aria-pressed='"+(on?"true":"false")+"' onclick=\"setGroup('"+g+"')\">"+esc(GROUP_NAME[g])+" <small>"+groupCount(g)+"</small></button>";
+    });
+    html += "</div>";
+  }
+  html += "<div class='cat-grid'>";
+  CATS[S.role].forEach(function(c, i){
+    var info = catCoverInfo(S.role, c, i);
+    var n = photoList(S.role, c).length;
+    html += "<a class='cat-item' href='#/cat/"+S.role+"/"+c.id+"'>"
+      + "<div class='cat-media'>"+imgTag(info.src, info.ph, c.name+" 封面", "loading='lazy' decoding='async'")+"</div>"
+      + "<div class='cat-cap'><h3>"+esc(c.name)+"</h3><span>"+n+" 张</span></div></a>";
+  });
+  html += "</div></div>";
+  $("view").innerHTML = html;
+  hydrateImages();
+}
+
+/* ================= 3. 分类姿势列表页 ================= */
+function renderCat(v){
+  var ic = icons();
+  var cat = CAT_FIND[v.role+":"+v.catId];
+  if(!cat){ go("#/home"); return; }
+  var key = catKey(v.role, cat.id);
+  if(S.selKey !== key){ S.selKey = key; S.sel.clear(); S.selectMode = false; }
+  var list = photoList(v.role, cat);
+  var scene = SCENE_FIND[sceneOfGroup(v.role)];
+  var hiddenN = (S.hidden[key] || []).length;
+  var selMode = S.selectMode;
+  var selAll = selMode && list.length > 0 && S.sel.size === list.length;
+  var html = "<div class='page"+(selMode?" has-batch":"")+"'>"
+    + "<header class='page-head'><p class='kicker'>"+(scene?esc(scene.name):"")+" / "+esc(GROUP_NAME[v.role]||"")+"</p>"
+    + "<h2>"+esc(cat.name)+"</h2>"
+    + "<p class='lede'>共 "+list.length+" 张 · "+(selMode?"点选照片后可批量删除":"点开全屏查看，左右滑动切换")+"<button class='tip-ic' id='localTipBtn' aria-label='关于本地照片'>"+ic.info+"</button></p></header>";
+  if(!selMode){
+    html += "<div class='tools'>"
+      + "<button class='btn btn-accent' id='shootBtn'>"+ic.cam+"连续翻阅</button>"
+      + "<button class='btn"+(S.manage?" on":"")+"' id='manageBtn'>"+(S.manage?"完成":"管理照片")+"</button>"
+      + "</div>";
+    if(S.manage){
+      html += "<div class='add-ph'><button class='btn' id='addPhotoBtn'>"+ic.plus+" 新增照片</button></div>"
+        + "<div class='mg-bar'><span class='mg-hint'>按住照片右上角手柄拖动排序；用键盘聚焦手柄后也可按方向键移动</span>"
+        + "<button class='btn btn-sm' id='batchBtn'>"+ic.trash+" 批量删除</button></div>";
+      if(hiddenN){
+        html += "<div class='mg-bar'><span class='mg-hint'>本环节已移除 "+hiddenN+" 张</span>"
+          + "<button class='btn btn-sm' id='restoreBtn'>恢复</button></div>";
+      }
+    }
+  }
+  if(list.length){
+  html += "<div class='ph-grid'>";
+  list.forEach(function(id){
+    var fav = isFav(id);
+    var custom = id.indexOf("c:")===0;
+    var replaced = !custom && !!S.photoMap[id];
+    var real = realSrc(id);
+    var ph = photoPH(id);
+    var sel = S.sel.has(id);
+    var lbl = selMode
+      ? (sel ? "取消选择 " : "选择 ")+cat.name+" 姿势 "+photoN(id)
+      : "查看 "+cat.name+" 姿势 "+photoN(id);
+    html += "<figure class='ph"+(sel?" sel":"")+"' data-id='"+id+"'>"
+      + "<button class='ph-open' data-open='"+id+"' aria-label='"+xesc(lbl)+"'"
+      + (selMode ? " aria-pressed='"+(sel?"true":"false")+"'" : "") + ">"
+      + imgTag(real || "", ph, cat.name+" 姿势 "+photoN(id), "loading='lazy' decoding='async'")
+      + "</button>";
+    if(selMode){
+      html += "<span class='pick' aria-hidden='true'>"+ic.check+"</span>";
+    }else if(S.manage){
+      html += "<button class='drag' data-drag='"+id+"' aria-label='拖动排序："+xesc(cat.name)+" 姿势 "+photoN(id)+"' aria-keyshortcuts='ArrowUp ArrowDown ArrowLeft ArrowRight'>"+ic.grip+"</button>";
+    }
+    html += "<figcaption class='ph-cap'><span class='ph-no'>姿势 "+pad(photoN(id))+"</span>";
+    if(!selMode){
+      html += "<button class='favbtn"+(fav?" on":"")+"' data-fav='"+id+"' aria-pressed='"+(fav?"true":"false")+"' aria-label='"+(fav?"取消收藏姿势 "+photoN(id):"收藏姿势 "+photoN(id))+"'>"+(fav?ic.heartF:ic.heart)+"</button>";
+    }
+    html += "</figcaption>";
+    if(S.manage && !selMode){
+      html += "<div class='mbar'>"
+        + "<button class='mini' data-rep='"+id+"'>"+ic.load+" 替换</button>"
+        + (custom||replaced ? "<button class='mini' data-del='"+id+"'>"+ic.trash+" "+(custom?"删除":"还原")+"</button>" : "")
+        + "</div>";
+    }
+    html += "</figure>";
+  });
+  html += "</div>";
+  }else{
+    html += "<div class='empty'>"+ic.cam+"<p>这个环节暂时没有照片。<br>"
+      + (S.manage ? "点上方「新增照片」挑一张存入本机。" : "点「管理照片」新增，已移除的也可以恢复。")
+      + "</p></div>";
+  }
+  if(selMode && list.length){
+    html += "<div class='batchbar' role='region' aria-label='批量操作'>"
+      + "<span class='batch-count'>已选 <b>"+S.sel.size+"</b> 张</span>"
+      + "<div class='batch-acts'>"
+      + "<button class='btn btn-sm btn-line' id='batchAll'>"+(selAll?"取消全选":"全选")+"</button>"
+      + "<button class='btn btn-sm btn-accent' id='batchDel'"+(S.sel.size?"":" disabled")+">删除</button>"
+      + "<button class='btn btn-sm btn-line' id='batchExit'>取消</button>"
+      + "</div></div>";
+  }
+  html += "</div>";
+  var vw = $("view");
+  var keep = vw.scrollTop;
+  vw.innerHTML = html;
+  vw.scrollTop = keep;
+  hydrateImages();
+  function refresh(){
+    var a = document.activeElement, focus = null;
+    if(a && a.id){ focus = {id:a.id}; }
+    else if(a && a.getAttribute){
+      var oid = a.getAttribute("data-open") || a.getAttribute("data-drag");
+      if(oid) focus = {attr:a.getAttribute("data-open") ? "data-open" : "data-drag", val:oid};
+    }
+    renderCat(route());
+    if(!focus) return;
+    var el = focus.id ? $(focus.id) : $("view").querySelector("["+focus.attr+"='"+focus.val+"']");
+    if(el && el.focus){ try{ el.focus({preventScroll:true}); }catch(err){ el.focus(); } }
+  }
+  if($("shootBtn")) $("shootBtn").onclick = function(){ openViewer(photoList(v.role, cat), 0, true); };
+  if($("manageBtn")) $("manageBtn").onclick = function(){
+    S.manage = !S.manage;
+    if(!S.manage){ S.selectMode = false; S.sel.clear(); }
+    refresh();
+  };
+  if($("addPhotoBtn")) $("addPhotoBtn").onclick = function(){ pickPhoto(null, v.role, cat.id); };
+  if($("batchBtn")) $("batchBtn").onclick = function(){ S.selectMode = true; S.sel.clear(); refresh(); };
+  if($("restoreBtn")) $("restoreBtn").onclick = function(){ restoreHidden(v.role, cat.id); };
+  if($("batchExit")) $("batchExit").onclick = function(){ S.selectMode = false; S.sel.clear(); refresh(); };
+  if($("batchAll")) $("batchAll").onclick = function(){
+    if(selAll) S.sel.clear();
+    else list.forEach(function(id){ S.sel.add(id); });
+    refresh();
+  };
+  if($("batchDel")) $("batchDel").onclick = function(){
+    var ids = Array.from(S.sel);
+    if(!ids.length) return;
+    openConfirm("删除照片",
+      "删除选中的 "+ids.length+" 张？默认样片会从本环节隐藏，可在「管理照片」里恢复；自建照片会从本机移除。删除后仍可撤销。",
+      "删除",
+      function(){ deletePhotos(ids, v.role, cat.id); });
+  };
+  if($("localTipBtn")) $("localTipBtn").onclick = function(){ $("localTipMask").classList.add("show"); };
+  vw.onclick = function(e){
+    var f = e.target.closest("[data-fav]");
+    if(f){ e.stopPropagation(); toggleFav(f.getAttribute("data-fav")); return; }
+    var rp = e.target.closest("[data-rep]");
+    if(rp){ e.stopPropagation(); pickPhoto(rp.getAttribute("data-rep"), v.role, cat.id); return; }
+    var dl = e.target.closest("[data-del]");
+    if(dl){ e.stopPropagation(); delPhoto(dl.getAttribute("data-del")); return; }
+    var op = e.target.closest("[data-open]");
+    if(op){
+      var id = op.getAttribute("data-open");
+      if(S.selectMode){
+        if(S.sel.has(id)) S.sel.delete(id); else S.sel.add(id);
+        refresh();
+        return;
+      }
+      var cur = photoList(v.role, cat);
+      openViewer(cur, Math.max(0, cur.indexOf(id)), false);
+    }
+  };
+  bindDrag(v.role, cat);
+}
+
+/* ================= 3.1 拖拽排序 / 批量删除 ================= */
+var _drag = null;
+window.addEventListener("pointerup", endDrag);
+window.addEventListener("pointercancel", endDrag);
+function bindDrag(role, cat){
+  var grid = $("view").querySelector(".ph-grid");
+  if(!grid) return;
+  var handles = grid.querySelectorAll("[data-drag]");
+  Array.prototype.forEach.call(handles, function(h){
+    h.addEventListener("pointerdown", function(e){
+      if(e.pointerType === "mouse" && e.button !== 0) return;
+      e.preventDefault();
+      var fig = h.closest(".ph");
+      if(!fig) return;
+      _drag = {fig:fig, grid:grid, pid:e.pointerId, moved:false, role:role, catId:cat.id};
+      fig.classList.add("dragging");
+      try{ h.setPointerCapture(e.pointerId); }catch(err){}
+    });
+    h.addEventListener("pointermove", function(e){
+      if(!_drag || e.pointerId !== _drag.pid) return;
+      e.preventDefault();
+      _drag.moved = true;
+      var target = null;
+      Array.prototype.forEach.call(_drag.grid.querySelectorAll(".ph"), function(fig){
+        if(fig === _drag.fig) return;
+        var r = fig.getBoundingClientRect();
+        if(e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) target = fig;
+      });
+      if(!target) return;
+      var tr = target.getBoundingClientRect();
+      var after;
+      if(e.clientY > tr.top + tr.height * 0.62) after = true;
+      else if(e.clientY < tr.top + tr.height * 0.38) after = false;
+      else after = e.clientX > tr.left + tr.width / 2;
+      _drag.grid.insertBefore(_drag.fig, after ? target.nextSibling : target);
+    });
+    h.addEventListener("pointerup", endDrag);
+    h.addEventListener("pointercancel", endDrag);
+    h.addEventListener("click", function(e){ e.stopPropagation(); });
+    h.addEventListener("keydown", function(e){
+      var fig = h.closest(".ph");
+      if(!fig) return;
+      if(e.key === "ArrowLeft" || e.key === "ArrowUp"){
+        var prev = fig.previousElementSibling;
+        if(prev){ e.preventDefault(); grid.insertBefore(fig, prev); saveGridOrder(grid, role, cat.id); toast("已前移"); }
+      }else if(e.key === "ArrowRight" || e.key === "ArrowDown"){
+        var next = fig.nextElementSibling;
+        if(next){ e.preventDefault(); grid.insertBefore(next, fig); saveGridOrder(grid, role, cat.id); toast("已后移"); }
+      }
+    });
+  });
+}
+function endDrag(){
+  if(!_drag) return;
+  var d = _drag;
+  _drag = null;
+  d.fig.classList.remove("dragging");
+  if(d.moved){
+    saveGridOrder(d.grid, d.role, d.catId);
+    toast("顺序已保存");
+  }
+}
+function saveGridOrder(grid, role, catId){
+  var ids = [];
+  Array.prototype.forEach.call(grid.querySelectorAll(".ph"), function(f){
+    var id = f.getAttribute("data-id");
+    if(id) ids.push(id);
+  });
+  S.order[catKey(role, catId)] = ids;
+  saveOrder();
+}
+/* ================= 4. 收藏页 ================= */
+function renderFav(){
+  var ic = icons();
+  var all = Array.from(S.favs).filter(function(id){
+    if(id.indexOf("c:") === 0) return true;
+    var q = id.split(":");
+    return !!(CAT_FIND[q[0]+":"+q[1]]);
+  });
+  var html = "<div class='page'>"
+    + "<header class='page-head'><p class='kicker'>SAVED / "+pad(all.length)+"</p><h2>收藏</h2></header>";
+  if(all.length===0){
+    html += "<div class='empty'>"+ic.heart
+      + "<p>还没有收藏的姿势。<br>浏览时点照片下方的收藏，就会汇总到这里。</p>"
+      + "<button class='btn btn-line' onclick=\"go('#/home')\">去主页看看</button></div></div>";
+    S.favFilter = "all";
+    $("view").innerHTML = html;
+    return;
+  }
+  var counts = {};
+  all.forEach(function(id){
+    var sid = sceneOfGroup(roleOf(id));
+    counts[sid] = (counts[sid] || 0) + 1;
+  });
+  var filter = S.favFilter || "all";
+  if(filter !== "all" && !counts[filter]) filter = "all";
+  S.favFilter = filter;
+  var shown = filter === "all" ? all : all.filter(function(id){
+    return sceneOfGroup(roleOf(id)) === filter;
+  });
+  html += "<div class='fchips' role='group' aria-label='按场景筛选收藏'>"
+    + "<button class='fchip"+(filter==="all"?" on":"")+"' type='button' data-ff='all' aria-pressed='"+(filter==="all"?"true":"false")+"'>全部<b>"+all.length+"</b></button>";
+  SCENES.forEach(function(sc){
+    if(!counts[sc.id]) return;
+    html += "<button class='fchip"+(filter===sc.id?" on":"")+"' type='button' data-ff='"+sc.id+"' aria-pressed='"+(filter===sc.id?"true":"false")+"'>"+esc(sc.name)+"<b>"+counts[sc.id]+"</b></button>";
+  });
+  html += "</div>";
+  if(!shown.length){
+    html += "<div class='empty'>"+ic.heart+"<p>这个场景暂时没有收藏的姿势。</p></div>";
+  }else{
+    html += "<div class='ph-grid'>";
+    shown.forEach(function(id){
+      var cat = catOf(id);
+      html += "<figure class='ph'>"
+        + "<button class='ph-open' data-open='"+id+"' aria-label='查看收藏 "+xesc(cat.name)+" 姿势 "+photoN(id)+"'>"
+        + imgTag(realSrc(id), photoPH(id), "收藏 "+cat.name+" 姿势 "+photoN(id), "loading='lazy' decoding='async'")
+        + "</button>"
+        + "<figcaption class='ph-cap'><span class='ph-no'>"+esc(cat.name)+" · "+pad(photoN(id))+"</span>"
+        + "<button class='favbtn on' data-fav='"+id+"' aria-pressed='true' aria-label='取消收藏姿势 "+photoN(id)+"'>"+ic.heartF+"</button></figcaption></figure>";
+    });
+    html += "</div>";
+  }
+  html += "</div>";
+  var vw = $("view");
+  var st = vw.scrollTop;
+  vw.innerHTML = html;
+  vw.scrollTop = st;
+  hydrateImages();
+  vw.onclick = function(e){
+    var ff = e.target.closest("[data-ff]");
+    if(ff){ S.favFilter = ff.getAttribute("data-ff"); renderFav(); return; }
+    var f = e.target.closest("[data-fav]");
+    if(f){ e.stopPropagation(); toggleFav(f.getAttribute("data-fav")); return; }
+    var op = e.target.closest("[data-open]");
+    if(op){
+      var id = op.getAttribute("data-open");
+      openViewer(shown, shown.indexOf(id), false);
+    }
+  };
+}
+
+/* ================= 5. 设备清单页 ================= */
+function renderGear(){
+  var ic = icons();
+  if(!S.gear) S.gear = JSON.parse(JSON.stringify(DEFAULT_GEAR));
+  var total = 0, doneAll = 0;
+  S.gear.forEach(function(g){ total += g.items.length; doneAll += g.items.filter(function(x){ return x.d; }).length; });
+  var html = "<div class='page'><header class='page-head'><p class='kicker'>ON LOCATION</p><h2>开拍前准备</h2>"
+    + "<p class='lede'>先看今天的黄金与蓝调时段，再按清单逐项确认。数据只保存在本机。</p></header>"
+    + solarCardHTML()
+    + "<div class='sec-head'><div class='sh-l'><p class='kicker'>CHECKLIST</p><h3>必带清单</h3></div>"
+    + "<span class='gc'>共 "+total+" 项<span class='sep'>·</span>已确认 <b>"+doneAll+"</b></span></div>";
+  S.gear.forEach(function(g, gi){
+    var done = g.items.filter(function(x){ return x.d; }).length;
+    var pct = g.items.length ? Math.round(done/g.items.length*100) : 0;
+    html += "<section class='gear-group'><div class='gear-head'><h3>"+esc(g.g)+"</h3>"
+      + "<span class='gc'>"+done+" / "+g.items.length+"<span class='sep'>·</span><b>"+pct+"%</b></span></div>"
+      + "<div class='gear-bar'><i style='width:"+pct+"%'></i></div>";
+    g.items.forEach(function(it, ii){
+      html += "<div class='gear-item"+(it.d?" on":"")+"' role='checkbox' aria-checked='"+(it.d?"true":"false")+"' tabindex='0' data-g='"+gi+"' data-i='"+ii+"'>"
+        + "<span class='chk'>"+ic.check+"</span><span class='tx'>"+esc(it.t)+"</span>"
+        + "<button class='del' data-delg='"+gi+"' data-deli='"+ii+"' aria-label='删除 "+xesc(it.t)+"'>"+ic.trash+"</button></div>";
+    });
+    html += "<div class='gear-add-row'><input placeholder='添加器材，如 双机快装板' data-addg='"+gi+"' aria-label='添加器材'>"
+      + "<button class='btn btn-sm' data-addbtn='"+gi+"'>"+ic.plus+" 添加</button></div></section>";
+  });
+  html += "<div style='padding-top:20px'><button class='btn btn-line' id='addGroupBtn' style='width:100%'>"+ic.plus+" 新增清单分组</button></div></div>";
+  $("view").innerHTML = html;
+  hydrateImages();
+  bindGeo();
+  $("view").onclick = function(e){
+    var dl = e.target.closest("[data-delg]");
+    if(dl){ e.stopPropagation(); delGear(dl.getAttribute("data-delg"), dl.getAttribute("data-deli")); return; }
+    var ab = e.target.closest("[data-addbtn]");
+    if(ab){
+      var gi = ab.getAttribute("data-addbtn");
+      var inp = $("view").querySelector("[data-addg='"+gi+"']");
+      var t = (inp && inp.value || "").trim();
+      if(!t){ toast("先输入器材名称"); return; }
+      addGear(gi, t);
+      return;
+    }
+    var g = e.target.closest(".gear-item");
+    if(g){ toggleGear(g.getAttribute("data-g"), g.getAttribute("data-i")); }
+  };
+  $("view").onkeydown = function(e){
+    if(e.target.matches("[data-addg]")){
+      if(e.key==="Enter"){
+        var t = (e.target.value||"").trim();
+        if(t){ addGear(e.target.getAttribute("data-addg"), t); }
+      }
+      return;
+    }
+    if(e.key==="Enter" || e.key===" "){
+      var it = e.target.closest(".gear-item");
+      if(it){ e.preventDefault(); toggleGear(it.getAttribute("data-g"), it.getAttribute("data-i")); }
+    }
+  };
+  if($("addGroupBtn")) $("addGroupBtn").onclick = function(){
+    openPrompt("新增清单分组", "分组名称", "添加", function(v){
+      S.gear.push({g:v, items:[]});
+      saveGear(); renderGear();
+      toast("已新增分组");
+    });
+  };
+}
+
+function themeOf(){
+  try{ return localStorage.getItem("wpl_theme") === "light" ? "light" : "dark"; }catch(e){ return "dark"; }
+}
+function setTheme(t){
+  document.documentElement.classList.toggle("light", t === "light");
+  try{ localStorage.setItem("wpl_theme", t); }catch(e){}
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute("content", t === "light" ? "#f3f1ec" : "#100f0e");
+  var b = $("themeBtn");
+  if(b){
+    b.className = "tb-icon" + (t === "light" ? "" : " sun");
+    b.innerHTML = t === "light" ? icons().moon : icons().sun;
+  }
+}
+
+/* ================= 6. 搜索 ================= */
+function searchAll(q){
+  q = (q || "").trim().toLowerCase();
+  var out = [];
+  SCENES.forEach(function(sc){
+    sc.groups.forEach(function(g){
+      CATS[g].forEach(function(c){
+        var hay = (sc.name + " " + GROUP_NAME[g] + " " + c.name + " " + g).toLowerCase();
+        if(!q || hay.indexOf(q) >= 0) out.push({sc:sc, g:g, c:c});
+      });
+    });
+  });
+  return out;
+}
+function renderSearch(){
+  var html = "<div class='page'>"
+    + "<div class='searchbar'>"+icons().search
+    + "<input id='sq' placeholder='搜场景或环节：秀禾、棚拍、海边…' autocomplete='off' spellcheck='false' aria-label='搜索场景或环节'>"
+    + "</div><div class='sres' id='sres'></div></div>";
+  $("view").innerHTML = html;
+  var inp = $("sq"), box = $("sres");
+  function paint(){
+    var list = searchAll(inp.value);
+    if(!list.length){ box.innerHTML = "<div class='sempty'>没找到，换个词试试</div>"; return; }
+    box.innerHTML = list.map(function(it){
+      var n = photoList(it.g, it.c).length;
+      return "<a class='srow' href='#/cat/"+it.g+"/"+it.c.id+"'>"
+        + "<span class='srow-main'><span class='smeta'>"+esc(it.sc.name)+" · "+esc(GROUP_NAME[it.g])+"</span>"
+        + "<b>"+esc(it.c.name)+"</b></span>"
+        + "<span class='scnt'>"+n+" 张</span></a>";
+    }).join("");
+  }
+  inp.addEventListener("input", paint);
+  paint();
+  setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 80);
+}
+
+/* ================= 7. 我的 ================= */
+function renderMine(){
+  var ic = icons();
+  var html = "<div class='page'>"
+    + "<header class='page-head'><p class='kicker'>NOTEBOOK</p><h2>关于这本册子</h2>"
+    + "<p class='lede'>一个按场景整理的本地姿势参考库，换手机前记得导出备份。</p></header>"
+    + "<section class='panel'><h3>"+ic.info+" 使用说明</h3>"
+    + "<ul><li>主页按场景进入：婚礼跟拍、陪拍、棚拍、COS；婚礼跟拍里再分新娘、新郎；</li>"
+    + "<li>点任意照片全屏查看，左右滑动切换，点下方心形收藏；</li>"
+    + "<li>照片页点「连续翻阅」进入现场连看模式，左右滑动换图，屏幕会尽量保持常亮；</li>"
+    + "<li>照片页点「管理照片」可替换照片、按住右上角手柄拖动排序，或进入「批量删除」一次清理多张。</li></ul></section>"
+    + "<section class='panel'><h3>"+ic.plus+" 添加自己的样片</h3>"
+    + "<p>在任一环节页点「管理照片」，可以把默认占位图替换成手机里的照片，也能新增照片。照片只保存在本机浏览器，不会上传。</p>"
+    + "<div class='rowbtns'><button class='btn btn-line' id='goHomeBtn'>"+ic.grid+" 去主页挑场景</button></div></section>"
+    + "<section class='panel'><h3>"+ic.phone+" 装到手机</h3>"
+    + "<div class='step'><b>iPhone（Safari）：</b>分享 → 添加到主屏幕 → 确认。</div>"
+    + "<div class='step'><b>安卓（Chrome）：</b>菜单「⋯」→ 添加到主屏幕 / 安装应用。</div>"
+    + "<div class='rowbtns'><button class='btn btn-line' id='installBtn'>查看详细步骤</button></div></section>"
+    + "<section class='panel'><h3>"+ic.save+" 数据备份</h3>"
+    + "<p>收藏、设备清单与自建照片信息可导出为文件；换手机或重装后导入即可恢复。照片原图请另行保留。</p>"
+    + "<div class='rowbtns'><button class='btn btn-line' id='exportBtn'>"+ic.save+" 导出备份</button>"
+    + "<button class='btn btn-line' id='importBtn'>"+ic.load+" 导入备份</button></div></section>"
+    + "<section class='panel'><h3>"+ic.doc+" 版权与免责声明</h3>"
+    + "<p>本APP仅用于姿势创意参考学习。APP内画面为创意再创作，灵感来源于网络公开素材，全部原始作品版权、肖像权归原作者/当事人所有。</p>"
+    + "<p>如您是作品权利人，认为 APP 内内容侵害您的合法权益，请联系 <a class='legal-mail' href='mailto:2053076454@qq.com'>2053076454@qq.com</a>，我们会在收到符合要求材料后的合理期限内下架对应内容。</p>"
+    + "<div class='rowbtns'><button class='btn btn-line' id='legalBtn' aria-haspopup='dialog'>查看完整声明</button></div></section>"
+    + "<section class='panel'><h3>关于</h3>"
+    + "<p>拍照姿势参考库 · 本地版 v2.1<br>数据仅保存在本机浏览器 IndexedDB 中，安全快速。</p></section>"
+    + "</div>";
+  $("view").innerHTML = html;
+  if($("installBtn")) $("installBtn").onclick = function(){ $("installMask").classList.add("show"); };
+  if($("goHomeBtn")) $("goHomeBtn").onclick = function(){ go("#/home"); };
+  if($("exportBtn")) $("exportBtn").onclick = exportData;
+  if($("importBtn")) $("importBtn").onclick = function(){ $("importInput").click(); };
+  if($("legalBtn")) $("legalBtn").onclick = function(){ openLegal(this); };
+}
+
+/* ================= 交互 ================= */
+function setGroup(g){
+  S.role = g; S.manage = false;
+  render();
+}
+function toggleFav(id){
+  if(S.favs.has(id)){ S.favs.delete(id); toast("已取消收藏"); }
+  else{ S.favs.add(id); toast("已收藏"); }
+  saveFavs();
+  var v = route();
+  if(v.v==="cat") renderCat(v);
+  else if(v.v==="fav") renderFav();
+  else if(v.v==="home") renderHome();
+  syncViewerFav();
+}
+function toggleGear(gi, ii){
+  S.gear[+gi].items[+ii].d = S.gear[+gi].items[+ii].d ? 0 : 1;
+  saveGear(); renderGear();
+}
+function addGear(gi, t){
+  S.gear[+gi].items.push({t:t, d:0});
+  saveGear(); renderGear();
+}
+function delGear(gi, ii){
+  S.gear[+gi].items.splice(+ii, 1);
+  saveGear(); renderGear();
+}
+function pickPhoto(photoId, role, catId){
+  S._pick = {photoId:photoId, role:role, catId:catId};
+  $("photoInput").click();
+}
+function delPhoto(id){
+  var v = route();
+  if(v.v !== "cat") return;
+  deletePhotos([id], v.role, v.catId);
+}
+function deletePhotos(ids, role, catId){
+  var key = catKey(role, catId);
+  var n = ids.length;
+  var prevCustom = S.custom.slice();
+  var prevFavs = new Set(S.favs);
+  var prevHidden = (S.hidden[key] || []).slice();
+  var prevOrder = S.order[key] ? S.order[key].slice() : null;
+  var customIds = [];
+  ids.forEach(function(id){
+    var custom = id.indexOf("c:")===0;
+    if(custom){
+      var idx = S.custom.findIndex(function(x){ return x.id===id; });
+      if(idx>=0) S.custom.splice(idx,1);
+      customIds.push(id);
+    }else{
+      if(!S.hidden[key]) S.hidden[key] = [];
+      if(S.hidden[key].indexOf(id) < 0) S.hidden[key].push(id);
+    }
+    if(S.favs.has(id)){ S.favs.delete(id); }
+    var ord = S.order[key];
+    if(ord){ var oi = ord.indexOf(id); if(oi>=0) ord.splice(oi,1); }
+  });
+  saveFavs(); saveCustomMeta(); saveHidden(); saveOrder();
+  S.sel.clear(); S.selectMode = false;
+  renderCat(route());
+  var committed = false;
+  showUndo("已删除 "+n+" 张", function(){
+    committed = true;
+    S.custom = prevCustom;
+    S.favs = prevFavs;
+    if(prevOrder){ S.order[key] = prevOrder; } else { delete S.order[key]; }
+    if(prevHidden.length){ S.hidden[key] = prevHidden; } else { delete S.hidden[key]; }
+    saveFavs(); saveCustomMeta(); saveOrder(); saveHidden();
+    var rv = route();
+    if(rv.v==="cat" && rv.role===role && rv.catId===catId) renderCat(rv);
+    toast("已撤销删除");
+  }, function(){
+    if(committed) return;
+    committed = true;
+    customIds.forEach(function(id){
+      try{ idbDel(id); }catch(e){}
+      if(S.photoMap[id]){ URL.revokeObjectURL(S.photoMap[id]); delete S.photoMap[id]; }
+    });
+  });
+}
+function restoreHidden(role, catId){
+  var key = catKey(role, catId);
+  var n = (S.hidden[key] || []).length;
+  if(!n) return;
+  S.hidden[key] = [];
+  saveHidden();
+  toast("已恢复 "+n+" 张");
+  renderCat(route());
+}
+
+/* ================= 全屏查看器 ================= */
+var ovStartX = null, _wake = null;
+function requestWake(){
+  try{
+    if(navigator.wakeLock && navigator.wakeLock.request){
+      navigator.wakeLock.request("screen").then(function(s){ _wake = s; }).catch(function(){});
+    }
+  }catch(e){}
+}
+function releaseWake(){
+  if(_wake){ try{ _wake.release(); }catch(e){} _wake = null; }
+}
+function openViewer(list, i, shoot){
+  S.viewer = {list:list.slice(), i:i, shoot:!!shoot};
+  $("ov").classList.add("show");
+  $("ovShootBtn").style.display = shoot ? "none" : "";
+  if(shoot){ requestWake(); toast("连续翻阅：左右滑动或点两侧箭头换图"); }
+  paintViewer();
+}
+function closeViewer(){ releaseWake(); $("ov").classList.remove("show"); S.viewer = null; }
+var GRID_KEY = "wpl_grid";
+function gridOn(){
+  try{ return localStorage.getItem(GRID_KEY) === "1"; }catch(e){ return false; }
+}
+/* 把辅助线框对齐到图片实际显示区域（contain 居中后的矩形） */
+function layoutGrid(){
+  var g = $("ovGrid"), stage = $("ovStage");
+  if(!g || !stage) return;
+  var sr = stage.getBoundingClientRect();
+  var box = { left: 0, top: 0, width: sr.width, height: sr.height };
+  var img = stage.querySelector("img");
+  if(img && img.naturalWidth && img.naturalHeight){
+    var nw = img.naturalWidth, nh = img.naturalHeight;
+    var k = Math.min(sr.width / nw, sr.height / nh);
+    var w = nw * k, h = nh * k;
+    box = { left: (sr.width - w) / 2, top: (sr.height - h) / 2, width: w, height: h };
+  }
+  g.style.left = box.left + "px";
+  g.style.top = box.top + "px";
+  g.style.width = box.width + "px";
+  g.style.height = box.height + "px";
+}
+function setGrid(on){
+  on = !!on;
+  try{ localStorage.setItem(GRID_KEY, on ? "1" : "0"); }catch(e){}
+  var g = $("ovGrid"), b = $("ovGridBtn");
+  if(g){
+    g.classList.toggle("show", on);
+    g.style.display = on ? "block" : "none";
+    g.style.opacity = on ? "1" : "0";
+  }
+  if(b){ b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false"); }
+  if(on) layoutGrid();
+}
+function paintViewer(){
+  var v = S.viewer;
+  if(!v) return;
+  var id = v.list[v.i], cat = catOf(id), g = roleOf(id);
+  $("ovTitle").textContent = (GROUP_NAME[g] ? GROUP_NAME[g]+" · " : "") + cat.name;
+  $("ovCounter").textContent = (v.i+1)+" / "+v.list.length;
+  var img = $("ovStage").querySelector("img");
+  if(!img){
+    img = document.createElement("img"); img.alt = "姿势参考";
+    $("ovStage").appendChild(img);
+  }
+  var ph = photoPH(id), real = realSrc(id);
+  img.onerror = function(){ this.onerror=null; this.src = ph; };
+  img.onload = function(){ if(gridOn()) layoutGrid(); };
+  img.src = real || ph;
+  var fav = isFav(id);
+  var b = $("ovFav");
+  b.classList.toggle("on", fav);
+  b.innerHTML = (fav?icons().heartF:icons().heart)+"<span>"+(fav?"已收藏":"收藏")+"</span>";
+  var s = refFor(id);
+  $("ovGrid").innerHTML = gridSVG(s && s.ct ? s.ct : "RULE_OF_THIRDS");
+  setGrid(gridOn());
+}
+function syncViewerFav(){
+  if(S.viewer){ paintViewer(); }
+}
+function ovNav(d){
+  if(!S.viewer) return;
+  var n = S.viewer.list.length;
+  S.viewer.i = (S.viewer.i + d + n) % n;
+  paintViewer();
+}
+
+/* ================= 数据备份 ================= */
+function exportData(){
+  var data = {ver:1, favs:Array.from(S.favs), gear:S.gear, custom:S.custom, order:S.order, hidden:S.hidden};
+  var blob = new Blob([JSON.stringify(data)], {type:"application/json"});
+  var a = document.createElement("a");
+  var d = new Date(), ds = d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+  a.href = URL.createObjectURL(blob);
+  a.download = "姿势库备份-"+ds+".json";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  toast("备份已导出");
+}
+function importData(file){
+  var rd = new FileReader();
+  rd.onload = function(){
+    try{
+      var d = JSON.parse(rd.result);
+      if(!d || !d.ver){ toast("文件格式不对"); return; }
+      S.favs = new Set(d.favs||[]);
+      if(Array.isArray(d.gear) && d.gear.length) S.gear = d.gear;
+      if(d.order && typeof d.order === "object" && !Array.isArray(d.order)) S.order = d.order;
+      if(d.hidden && typeof d.hidden === "object" && !Array.isArray(d.hidden)) S.hidden = d.hidden;
+      saveFavs(); saveGear(); saveOrder(); saveHidden();
+      toast("导入成功");
+      renderMine();
+    }catch(e){ toast("文件解析失败"); }
+  };
+  rd.readAsText(file);
+}
+
+/* ================= 版权声明弹层 ================= */
+var legalReturn = null;
+function openLegal(trigger){
+  legalReturn = trigger || document.activeElement;
+  var m = $("legalMask");
+  if(!m) return;
+  m.classList.add("show");
+  var b = $("legalX") || $("legalOk");
+  if(b) setTimeout(function(){ try{ b.focus({preventScroll:true}); }catch(e){ b.focus(); } }, 0);
+}
+function closeLegal(){
+  var m = $("legalMask");
+  if(!m) return;
+  m.classList.remove("show");
+  if(legalReturn && legalReturn.focus){ try{ legalReturn.focus({preventScroll:true}); }catch(e){ legalReturn.focus(); } }
+  legalReturn = null;
+}
+
+/* ================= 事件绑定 ================= */
+function bindEvents(){
+  window.addEventListener("hashchange", function(){ render(); });
+  window.addEventListener("resize", function(){ if(S.viewer && gridOn()) layoutGrid(); });
+  window.addEventListener("orientationchange", function(){ setTimeout(function(){ if(S.viewer && gridOn()) layoutGrid(); }, 120); });
+  $("ovClose").onclick = closeViewer;
+  $("ovShootBtn").onclick = function(){
+    if(!S.viewer) return;
+    var id = S.viewer.list[S.viewer.i];
+    var cat = catOf(id), r = roleOf(id);
+    var list = photoList(r, cat);
+    S.viewer.list = list;
+    S.viewer.i = Math.min(S.viewer.i, list.length-1);
+    S.viewer.shoot = true;
+    $("ovShootBtn").style.display = "none";
+    requestWake();
+    toast("连续翻阅：左右滑动或点两侧箭头换图");
+    paintViewer();
+  };
+  $("ovPrev").onclick = function(){ ovNav(-1); };
+  $("ovNext").onclick = function(){ ovNav(1); };
+  $("ovFav").onclick = function(){
+    if(S.viewer){ toggleFav(S.viewer.list[S.viewer.i]); }
+  };
+  $("ovGridBtn").onclick = function(){ setGrid(!gridOn()); };
+  $("ovInfo").onclick = function(){
+    if(!S.viewer) return;
+    var id = S.viewer.list[S.viewer.i];
+    var card = shotCardHTML(id);
+    var body = $("shotBody");
+    if(card){
+      body.innerHTML = card
+        + "<div style='display:flex;justify-content:flex-end;margin-top:18px'><button class='btn btn-accent' id='shotOk'>知道了</button></div>";
+    }else{
+      body.innerHTML = "<h3>拍摄参考</h3><p>这一环节暂时没有要点卡。进环节页「管理照片」可以换成自己的照片。</p>"
+        + "<div style='display:flex;justify-content:flex-end;margin-top:18px'><button class='btn btn-accent' id='shotOk'>知道了</button></div>";
+    }
+    $("shotMask").classList.add("show");
+    var ok = $("shotOk");
+    if(ok) ok.onclick = function(){ $("shotMask").classList.remove("show"); };
+  };
+  $("ovStage").addEventListener("touchstart", function(e){
+    ovStartX = e.touches[0].clientX;
+  }, {passive:true});
+  $("ovStage").addEventListener("touchend", function(e){
+    if(ovStartX===null) return;
+    var dx = e.changedTouches[0].clientX - ovStartX;
+    if(dx < -40) ovNav(1);
+    else if(dx > 40) ovNav(-1);
+    ovStartX = null;
+  }, {passive:true});
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape" && $("confirmMask").classList.contains("show")){
+      closeConfirm(false);
+      return;
+    }
+    if(e.key==="Escape" && $("promptMask").classList.contains("show")){
+      closePrompt();
+      return;
+    }
+    if(e.key==="Escape" && $("legalMask").classList.contains("show")){
+      closeLegal();
+      return;
+    }
+    if($("legalMask").classList.contains("show") && e.key==="Tab"){
+      var lf = $("legalMask").querySelectorAll("button, a[href]");
+      if(lf.length){
+        var first = lf[0], last = lf[lf.length-1];
+        if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+        else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+      }
+    }
+    if(e.key==="Escape" && $("shotMask").classList.contains("show")){
+      $("shotMask").classList.remove("show");
+      return;
+    }
+    if(!S.viewer) return;
+    if(e.key==="ArrowLeft") ovNav(-1);
+    else if(e.key==="ArrowRight") ovNav(1);
+    else if(e.key==="g" || e.key==="G") setGrid(!gridOn());
+    else if(e.key==="Escape") closeViewer();
+  });
+  $("photoInput").onchange = function(){
+    var f = this.files && this.files[0];
+    if(!f) return;
+    var p = S._pick; S._pick = null;
+    if(!f.type || f.type.indexOf("image/")!==0){ toast("请选择图片文件"); return; }
+    var targetId;
+    if(p.photoId){ targetId = p.photoId; }
+    else{
+      targetId = uid();
+      S.custom.push({id:targetId, role:p.role, catId:p.catId, ts:Date.now()});
+      saveCustomMeta();
+    }
+    setPhotoFile(targetId, f).then(function(){
+      toast("照片已保存到本机");
+      renderCat(route());
+    }).catch(function(){
+      if(!p.photoId){
+        var ci = S.custom.findIndex(function(x){ return x.id===targetId; });
+        if(ci>=0){ S.custom.splice(ci,1); saveCustomMeta(); }
+      }
+      toast("保存失败，请重试");
+      renderCat(route());
+    });
+    this.value = "";
+  };
+  $("importInput").onchange = function(){
+    var f = this.files && this.files[0];
+    if(f) importData(f);
+    this.value = "";
+  };
+  $("legalOk").onclick = closeLegal;
+  $("legalX").onclick = closeLegal;
+  $("legalMask").addEventListener("click", function(e){
+    if(e.target===this) closeLegal();
+  });
+  $("confirmYes").onclick = function(){ closeConfirm(true); };
+  $("confirmNo").onclick = function(){ closeConfirm(false); };
+  $("confirmMask").addEventListener("click", function(e){
+    if(e.target===this) closeConfirm(false);
+  });
+  $("promptYes").onclick = submitPrompt;
+  $("promptNo").onclick = closePrompt;
+  $("promptMask").addEventListener("click", function(e){
+    if(e.target===this) closePrompt();
+  });
+  $("promptInput").addEventListener("keydown", function(e){
+    if(e.key==="Enter"){ e.preventDefault(); submitPrompt(); }
+  });
+  $("undoBtn").onclick = doUndo;
+  window.addEventListener("pagehide", function(){
+    if(!_undoExpire) return;
+    var ex = _undoExpire;
+    _undoFn = null; _undoExpire = null;
+    if(_undoTimer){ clearTimeout(_undoTimer); _undoTimer = null; }
+    try{ ex(); }catch(e){}
+  });
+  document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState==="visible" && S.viewer && S.viewer.shoot) requestWake();
+  });
+  $("installOk").onclick = function(){ $("installMask").classList.remove("show"); };
+  $("installMask").addEventListener("click", function(e){
+    if(e.target===this) this.classList.remove("show");
+  });
+  $("localTipOk").onclick = function(){ $("localTipMask").classList.remove("show"); };
+  $("localTipMask").addEventListener("click", function(e){
+    if(e.target===this) this.classList.remove("show");
+  });
+  $("shotMask").addEventListener("click", function(e){
+    if(e.target===this) this.classList.remove("show");
+  });
+}
+
+/* ================= 渲染入口 ================= */
+function render(){
+  var v = route();
+  var vw = $("view");
+  var nk = routeKey(v);
+  if(_curKey !== null) SCROLL_MEM[_curKey] = vw.scrollTop;
+  var changed = (_curKey !== nk);
+  if(S.viewer){ releaseWake(); S.viewer = null; $("ov").classList.remove("show"); }
+  if(v.v!=="cat"){ S.manage = false; S.selectMode = false; S.sel.clear(); }
+  renderTopbar(v);
+  renderTabbar(v);
+  vw.onclick = null;
+  vw.onkeydown = null;
+  if(changed) vw.scrollTop = 0;
+  if(v.v==="cat"){
+    if(!CAT_FIND[v.role+":"+v.catId]){ go("#/home"); return; }
+    renderCat(v);
+  }else if(v.v==="scene"){ renderScene(v); }
+  else if(v.v==="search"){ renderSearch(); }
+  else if(v.v==="home"){ renderHome(v); }
+  else if(v.v==="fav"){ renderFav(); }
+  else if(v.v==="gear"){ renderGear(); }
+  else{ renderMine(); }
+  vw.scrollTop = SCROLL_MEM[nk] || 0;
+  _curKey = nk;
+}
+
+/* 启动 */
+var _booted = false, _synced = false;
+function boot(){
+  if(!_booted){ _booted = true; bindEvents(); }
+  render();
+  if(!_synced){
+    _synced = true;
+    syncPhotos(function(){ render(); });
+  }
+}
+var _bootTimer = setTimeout(boot, 1500);
+loadPersist().then(function(){
+  clearTimeout(_bootTimer);
+  boot();
+}).catch(function(){
+  clearTimeout(_bootTimer);
+  boot();
+});
+</script>
+</body>
+</html>
