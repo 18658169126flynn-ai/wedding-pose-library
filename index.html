@@ -951,7 +951,7 @@ function hydrateImages(){
     var probe = new Image();
     probe.onload = function(){ el.src = src; };
     probe.onerror = function(){
-      if(/\.webp$/i.test(src)){ el.src = src.replace(/\.webp$/i,'.jpg'); }
+      if(/\.webp(\?|$)/i.test(src)){ el.src = src.replace(/\.webp(\?.*)?$/i, '.jpg$1'); }
     };
     probe.src = src;
   });
